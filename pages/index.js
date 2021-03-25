@@ -1,65 +1,78 @@
 import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+// import styles from '../styles/Home.module.css'
+import {Button, Col, Divider, Row} from 'antd';
 
 export default function Home() {
   return (
-    <div className={styles.container}>
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+    <>
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
+        {/*<br/>*/}
+        {/*<br/>*/}
+        {/*<br/>*/}
+        {/*<br/>*/}
+        {/*<br/>*/}
+        {/*<h1 className={'text-center text-4xl md:text-8xl font-bold text-edorble-500'}>*/}
+        {/*    ed<span>*/}
+        {/*    <img className={'inline animate-spin-slow w-1/6 md:w-min'} src="https://uploads-ssl.webflow.com/55aa9b26d5a90967531209a8/55e4db7b10c87b29299f26aa_Edorble-LogoOnly.png" alt=""/>*/}
+        {/*</span>rble*/}
+        {/*</h1>*/}
 
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
+        {/*<Row type={'flex'} align={'center'}>*/}
+        {/*    <Col span={14}>*/}
+        {/*        <Divider />*/}
+        {/*    </Col>*/}
+        {/*</Row>*/}
 
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
+        {/*<br/>*/}
+        {/*<br/>*/}
+        {/*<br/>*/}
 
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
 
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
+        <div style={{position: 'relative'}}>
 
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
+            <video autoPlay loop style={{
+                backgroundImage: 'url("https://uploads-ssl.webflow.com/55aa9b26d5a90967531209a8/5a74bc99b3a1bb000193fa76_Edorble Video Cropped copy 720 (1)-poster-00001.jpg")',
+                objectFit: 'cover',
+                width: '100vw',
+                position: 'fixed',
+                height: '100vh'
+            }} muted playsInline data-wf-ignore="true" data-object-fit="cover"><source src="https://uploads-ssl.webflow.com/55aa9b26d5a90967531209a8/5a74bc99b3a1bb000193fa76_Edorble Video Cropped copy 720 (1)-transcode.mp4" data-wf-ignore="true" /><source src="https://uploads-ssl.webflow.com/55aa9b26d5a90967531209a8/5a74bc99b3a1bb000193fa76_Edorble Video Cropped copy 720 (1)-transcode.webm" data-wf-ignore="true" /></video>
+
+
+
+
+
+            <div className={'flex align-center justify-center w-full top-60 absolute z-50 mt-10'} style={{zIndex: `1000`}}>
+                <h1 className={'text-center text-6xl md:text-8xl font-bold text-edorble-500'}>
+                    ed<span>
+            <img className={'inline animate-spin-slow w-1/6 md:w-min'} src="https://uploads-ssl.webflow.com/55aa9b26d5a90967531209a8/55e4db7b10c87b29299f26aa_Edorble-LogoOnly.png" alt=""/>
+        </span>rble
+                </h1>
+            </div>
+
+
+            <div className={'flex align-center justify-center w-full top-96 absolute z-50 mt-10'} style={{zIndex: `1000`}}>
+
+
+                <Row type={'flex'} align={'center'} gutter={24}>
+                    <Col>
+                        <Button size={'large'} type={'primary'} className={'font-bold'}>Sign In</Button>
+                    </Col>
+                    <Col>
+                        <Button size={'large'} type={'primary'} className={'font-bold'}>Sign Up</Button>
+                    </Col>
+                </Row>
+
+            </div>
+
+            {/*<Row type={'flex'} align={'center'} gutter={24} style={{position: 'absolute', zIndex: 10000, bottom: '100px', left: '30vw'}}>*/}
+
+
         </div>
-      </main>
 
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
-    </div>
+
+
+
+    </>
   )
 }
