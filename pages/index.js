@@ -11,6 +11,16 @@ export default function Home() {
       const [retypePassword, setRetypePassword] = useState('');
       const [loading, setLoading] = useState(false);
 
+      useEffect(() => {
+          if(window){
+              let token = localStorage.getItem('token');
+              console.log(token);
+              if(token){
+                  window.location.href = '/dashboard';
+              }
+          }
+      }, [])
+
       const onSignIn = async (ev) => {
           ev.preventDefault();
           if(email && password){
@@ -112,7 +122,8 @@ export default function Home() {
                 <div className={'flex align-center justify-center w-full top-60 absolute z-50 mt-10'} style={{zIndex: `1000`}}>
                     <h1 className={'text-center text-6xl md:text-8xl font-bold text-edorble-500'}>
                         ed<span>
-                <img className={'inline animate-spin-slow w-1/6 md:w-min'} src="https://uploads-ssl.webflow.com/55aa9b26d5a90967531209a8/55e4db7b10c87b29299f26aa_Edorble-LogoOnly.png" alt=""/>
+                {/*<img className={'inline animate-spin-slow w-1/6 md:w-min'} src="https://uploads-ssl.webflow.com/55aa9b26d5a90967531209a8/55e4db7b10c87b29299f26aa_Edorble-LogoOnly.png" alt=""/>*/}
+                        <img className={'inline animate-spin-slow w-20 mr-1 ml-1'} src="https://www.bluecircle.foundation/s3/uploads/55000efd-581f-47c2-ae9a-3980313cac68_icon_256x256.png" alt=""/>
             </span>rble
                     </h1>
                 </div>
@@ -140,7 +151,7 @@ export default function Home() {
                                         <input type="password" value={password} onChange={(ev) => setPassword(ev.currentTarget.value)} required className={'border-0 w-full rounded'} placeholder={'Password'}/>
                                     </Col>
                                     <Col span={24} className={'mt-5'}>
-                                        <Button type="primary" loading={loading} htmlType={'submit'} className={'border-0 w-full rounded font-bold'}>Submit</Button>
+                                        <Button  loading={loading} htmlType={'submit'} className={'border-0 bg-edorble-yellow-500 hover:bg-edorble-yellow-600 hover:text-black w-full rounded font-bold'}>Submit</Button>
                                     </Col>
                                 </Row>
                             </form>
@@ -148,7 +159,6 @@ export default function Home() {
                         </Col>}
 
                         {currentTab=='signup' && <Col className={'p-2 bg-gradient-to-r from-edorble-600 via-edorble-300 to-edorble-600 w-1/2 mt-5 rounded'} span={24}>
-
                             <h1 className={'text-center text-xl text-white font-bold'}>Signup using email and password</h1>
                             <form onSubmit={onSignUp}>
                                 <Row type={'flex'} align={'center'} className={'mt-5'}>
@@ -163,7 +173,8 @@ export default function Home() {
                                         {(password != retypePassword) && <small className={'text-red-500 font-bold'}>Passwords don't match</small>}
                                     </Col>
                                     <Col span={24} className={'mt-5'}>
-                                        <Button loading={loading} disabled={password != retypePassword} type="primary" htmlType={'submit'} className={'border-0 w-full rounded font-bold'}>Submit</Button>
+                                        <Button  loading={loading} htmlType={'submit'} disabled={password != retypePassword} className={'border-0 bg-edorble-yellow-500 hover:bg-edorble-yellow-600 hover:text-black w-full rounded font-bold'}>Submit</Button>
+                                        {/*<Button loading={loading} disabled={password != retypePassword} type="primary" htmlType={'submit'} className={'border-0 w-full rounded font-bold'}>Submit</Button>*/}
                                     </Col>
                                 </Row>
                             </form>

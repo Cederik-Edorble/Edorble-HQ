@@ -14,7 +14,21 @@ let edorble = {
   '900': '#214658',
 }
 
+let edorbleYellow = {
+  '50': '#fff899',
+  '100': '#fff566',
+  '200': '#fff34d',
+  '300': '#fff133',
+  '400': '#fff01a',
+  '500': '#ffee00',
+  '600': '#e6d600',
+  '700': '#ccbe00',
+  '800': '#b3a700',
+  '900': '#998f00',
+}
+
 colors.edorble = edorble
+colors['edorble-yellow'] = edorbleYellow
 
 module.exports = {
   purge: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
