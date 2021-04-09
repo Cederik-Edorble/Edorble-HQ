@@ -45,6 +45,7 @@ function Index(props) {
 
     const [showModal, setShowModal] = useState(null);
     const [activeWorld, setActiveWorld] = useState();
+    const [activeTab, setActiveTab] = useState('worlds');
 
     return (
         <>
@@ -59,10 +60,16 @@ function Index(props) {
             <div className={'grid grid-cols-12 gap-4 p-2'}>
                 <DownloadEdorble />
                 <div className={'col-span-12 md:col-span-8 border border-edorble-400 rounded'}>
-                    <DashboardNav activeWorld={activeWorld} setActiveWorld={setActiveWorld} />
+                    <DashboardNav activeWorld={activeWorld}
+                                  activeTab={activeTab}
+                                  setActiveTab={setActiveTab}
+                                  setActiveWorld={setActiveWorld} />
                     <div className={'p-10'}>
                         <div className={'grid grid-cols-12 gap-4'}>
-                            <DashboardWorlds setActiveWorld={setActiveWorld} activeWorld={activeWorld} />
+                            <DashboardWorlds setActiveWorld={setActiveWorld}
+                                             activeTab={activeTab}
+                                             setActiveTab={setActiveTab}
+                                             activeWorld={activeWorld} />
                         </div>
                     </div>
                 </div>

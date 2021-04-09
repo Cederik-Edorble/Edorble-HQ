@@ -7,13 +7,13 @@ function DashboardNav(props) {
                 <div className={'col-span-3 text-white font-bold cursor-pointer'} onClick={() => props.activeWorld && props.setActiveWorld(null)}>
                     {props.activeWorld ? 'Back to Worlds' : 'Worlds'}
                 </div>
-                <div className={props.activeWorld ? 'col-span-3 text-white font-bold cursor-pointer' : 'col-span-3 text-edorble-100 font-bold cursor-pointer'}>
+                <div onClick={() => props.setActiveTab('settings')} className={(props.activeWorld && props.activeTab=='settings') ? 'col-span-3 text-white font-bold cursor-pointer' : 'col-span-3 text-edorble-100 font-bold cursor-pointer'}>
                     Settings
                 </div>
-                <div className={props.activeWorld ? 'col-span-3 text-white font-bold cursor-pointer' : 'col-span-3 text-edorble-100 font-bold cursor-pointer'}>
+                <div onClick={() => props.setActiveTab('map')} className={(props.activeWorld && props.activeTab=='map') ? 'col-span-3 text-white font-bold cursor-pointer' : 'col-span-3 text-edorble-100 font-bold cursor-pointer'}>
                     Map
                 </div>
-                <div className={props.activeWorld ? 'col-span-3 text-white font-bold cursor-pointer' : 'col-span-3 text-edorble-100 font-bold cursor-pointer'}>
+                <div onClick={() => props.setActiveTab('content')} className={(props.activeWorld && props.activeTab=='content') ? 'col-span-3 text-white font-bold cursor-pointer' : 'col-span-3 text-edorble-100 font-bold cursor-pointer'}>
                     Content
                 </div>
             </div>
