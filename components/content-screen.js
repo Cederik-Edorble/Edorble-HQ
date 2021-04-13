@@ -1,14 +1,179 @@
 import React, {useState, useEffect} from 'react';
-import {Button} from "antd";
+import {Button, Col, Drawer, Row} from "antd";
+
+function NewRegionForm (props) {
+    const [name, setName] = useState(props.activeRegion ? props.activeRegion.name : '');
+
+    const createRegion = async (ev) => {
+        ev.preventDefault();
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/maps/${props.activeWorld.map}/regions?token=${localStorage.getItem('token')}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({name: name})
+        })
+        props.fetchRegions()
+    };
+
+    // const updateRegion = async (ev) => {
+    //     ev.preventDefault();
+    //     await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/worlds/${props.activeWorld._id}/regions/${props.activeRegion._id}?token=${localStorage.getItem('token')}`, {
+    //         method: 'PUT',
+    //         headers: {
+    //             'Content-Type': 'application/json'
+    //         },
+    //         body: JSON.stringify({name: name})
+    //     })
+    //     props.fetchRegions()
+    // };
+
+    return (
+        <>
+            <div className={'grid grid-cols-12'}>
+                <div className={'col-span-12'}>
+                    {/*<form onSubmit={props.activeRegion ? updateRegion : createRegion}>*/}
+                    <form onSubmit={createRegion}>
+                        <Row type={'flex'} align={'center'} className={'mt-5'}>
+                            <Col span={24}>
+                                <input type={"text"}
+                                       onChange={(ev) => {
+                                           setName(ev.currentTarget.value)
+                                       }}
+                                       value={name}
+                                       required className={'border-2 border-edorble-200 hover:border-edorble-200 focus:border-edorble-200 w-full rounded'}
+                                       placeholder={'Region Name'}/>
+                            </Col>
+                            {/*<Col span={24} className={'mt-2'}>*/}
+                            {/*    {maps && <select className={'border-2 border-edorble-200 rounded'} onChange={(val) => setSelected}>*/}
+                            {/*        {maps.map((map) => {*/}
+                            {/*            return <option value={map.name} key={map._id}>{map.name}</option>*/}
+                            {/*        })}*/}
+                            {/*    </select>}*/}
+                            {/*</Col>*/}
+                            <Col span={24} className={'mt-5'}>
+                                <Button loading={false}
+                                        htmlType={'submit'}
+                                        className={'border-0 bg-edorble-yellow-500 hover:bg-edorble-yellow-600 hover:text-black w-full rounded font-bold'}>Submit</Button>
+                            </Col>
+                        </Row>
+                    </form>
+
+                </div>
+            </div>
+        </>
+    )
+}
+
+function NewScreenForm (props) {
+    const [name, setName] = useState('');
+
+    const createScreen = async (ev) => {
+        ev.preventDefault();
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/regions/${props.activeRegion._id}/screens?token=${localStorage.getItem('token')}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({name: name})
+        })
+        props.fetchRegions()
+    };
+
+    // const updateScreen = async (ev) => {
+    //     ev.preventDefault();
+    //     await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/regions/${props.activeRegion._id}/screens/${props.activeRegion._id}?token=${localStorage.getItem('token')}`, {
+    //         method: 'PUT',
+    //         headers: {
+    //             'Content-Type': 'application/json'
+    //         },
+    //         body: JSON.stringify({name: name})
+    //     })
+    //     props.fetchRegions()
+    // };
+
+    return (
+        <>
+            <div className={'grid grid-cols-12'}>
+                <div className={'col-span-12'}>
+                    <form onSubmit={createScreen}>
+                        <Row type={'flex'} align={'center'} className={'mt-5'}>
+                            <Col span={24}>
+                                <input type={"text"}
+                                       onChange={(ev) => {
+                                           setName(ev.currentTarget.value)
+                                       }}
+                                       value={name}
+                                       required className={'border-2 border-edorble-200 hover:border-edorble-200 focus:border-edorble-200 w-full rounded'}
+                                       placeholder={'Screen Name'}/>
+                            </Col>
+                            {/*<Col span={24} className={'mt-2'}>*/}
+                            {/*    {maps && <select className={'border-2 border-edorble-200 rounded'} onChange={(val) => setSelected}>*/}
+                            {/*        {maps.map((map) => {*/}
+                            {/*            return <option value={map.name} key={map._id}>{map.name}</option>*/}
+                            {/*        })}*/}
+                            {/*    </select>}*/}
+                            {/*</Col>*/}
+                            <Col span={24} className={'mt-5'}>
+                                <Button loading={false}
+                                        htmlType={'submit'}
+                                        className={'border-0 bg-edorble-yellow-500 hover:bg-edorble-yellow-600 hover:text-black w-full rounded font-bold'}>Submit</Button>
+                            </Col>
+                        </Row>
+                    </form>
+
+                </div>
+            </div>
+        </>
+    )
+}
 
 function ContentScreen(props) {
 
     const [url, setUrl] = useState('');
     const [currentUrl, setCurrentUrl] = useState('');
 
+    const [regions, setRegions] = useState();
+    const [screens, setScreens] = useState();
+    // const [activeRegion, setActiveRegion] = useState();
+    const [selectedRegion, setSelectedRegion] = useState();
+
+    const [selectedScreen, setSelectedScreen] = useState();
+
+    const [drawerTitle, setDrawerTitle] = useState();
+    const [drawerBody, setDrawerBody] = useState();
+
+    const fetchRegions = async () => {
+        let res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/maps/${props.activeWorld.map}/regions?token=${localStorage.getItem('token')}`);
+        let json = await res.json();
+        setRegions(json.data);
+        setDrawerBody(null);
+        setDrawerTitle(null);
+    };
+
+    const fetchScreens = async () => {
+        let res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/regions/${selectedRegion._id}/screens?token=${localStorage.getItem('token')}`);
+        let json = await res.json();
+        console.log(json)
+        setScreens(json.data);
+        setDrawerBody(null);
+        setDrawerTitle(null);
+    };
+
+
+    useEffect(() => {
+        fetchRegions();
+    }, [])
+
+    useEffect(() => {
+        // if(selectedRegion){
+        //     console.log(selectedRegion)
+        // }
+        selectedRegion && fetchScreens();
+    }, [selectedRegion])
+
     const onEnter = async (ev) => {
         if(ev.keyCode==13){
-            console.log(url);
             setCurrentUrl(url);
         }
     };
@@ -16,58 +181,68 @@ function ContentScreen(props) {
     return (
         <>
 
+            <Drawer
+                title={drawerTitle}
+                placement="right"
+                closable={true}
+                onClose={() => setDrawerBody(null)}
+                // width={'w-10'}
+                // bodyStyle={{width: '100%'}}
+                // drawerStyle={{width: '100%'}}
+                // contentWrapperStyle={{width: '50%'}}
+                visible={drawerBody}
+            >
+                {drawerBody}
+            </Drawer>
+
             <div className={'col-span-12 p-2 mb-5'}>
                 <h1 className={'text-center font-semibold text-edorble-500 w-full'}>To save content, select or create region and the desired screen, then add your links in the empty slots</h1>
             </div>
 
             <div className={'col-span-12 p-2 mb-5 flex justify-center'}>
+                {regions && regions.map((region) => {
+                    return <Button htmlType={'submit'}
+                                   key={region._id}
+                                   onClick={() => {
+                                       setScreens(null)
+                                       setSelectedScreen(null)
+                                       setSelectedRegion(region)
+                                   }}
+                                   type={selectedRegion ? ((selectedRegion._id == region._id) && 'primary') : 'default'}
+                                   size={'large'}
+                                   className={'rounded font-bold mr-2'}>{region.name}</Button>
+                })}
                 <Button htmlType={'submit'}
-                        type={'default'}
+                        type={'primary'}
+                        ghost
                         size={'large'}
-                        className={'rounded font-bold mr-2'}>Region 1</Button>
-                <Button htmlType={'submit'}
-                        type={'default'}
-                        size={'large'}
-                        className={'rounded font-bold mr-2'}>Region 2</Button>
-                <Button htmlType={'submit'}
-                        type={'default'}
-                        size={'large'}
-                        className={'rounded font-bold mr-2'}>Region 3</Button>
-                <Button htmlType={'submit'}
-                        type={'default'}
-                        size={'large'}
-                        className={'rounded font-bold mr-2'}>Region 4</Button>
+                        onClick={() => {
+                            setDrawerTitle(<h1 className={'text-edorble-500 font-bold'}>New Region</h1>);
+                            setDrawerBody(<NewRegionForm activeWorld={props.activeWorld} fetchRegions={fetchRegions} />)
+                        }}
+                        className={'rounded font-bold'} icon={<i className={'fa fa-plus mr-2'}></i>}>Add Region</Button>
+            </div>
+
+            {selectedRegion && <div className={'col-span-12 p-2 mb-5 flex justify-center'}>
+                {screens && screens.map((screen) => {
+                    return <Button htmlType={'submit'}
+                                   key={screen._id}
+                                   onClick={() => setSelectedScreen(screen)}
+                                   type={selectedScreen ? ((selectedScreen._id == screen._id) && 'primary') : 'default'}
+                                   className={'rounded font-bold mr-2'}>{screen.name}</Button>
+                })}
 
                 <Button htmlType={'submit'}
                         type={'primary'}
-                        size={'large'}
-                        className={'rounded font-bold'} icon={<i className={'fa fa-plus mr-2'}></i>}>Add Region</Button>
+                        ghost
+                        onClick={() => {
+                            setDrawerTitle(<h1 className={'text-edorble-500 font-bold'}>New Screen</h1>);
+                            setDrawerBody(<NewScreenForm activeRegion={selectedRegion} fetchRegions={fetchRegions} />)
+                        }}
+                        className={'rounded font-bold'} icon={<i className={'fa fa-plus mr-2'}></i>}>Add Screen</Button>
+            </div>}
 
-            </div>
-
-            <div className={'col-span-12 p-2 mb-5 flex justify-center'}>
-                <Button htmlType={'submit'}
-                        type={'default'}
-                        className={'rounded font-bold mr-2'}>Screen 1</Button>
-                <Button htmlType={'submit'}
-                        type={'default'}
-                        className={'rounded font-bold mr-2'}>Screen 2</Button>
-                <Button htmlType={'submit'}
-                        type={'default'}
-                        className={'rounded font-bold mr-2'}>Screen 3</Button>
-                <Button htmlType={'submit'}
-                        type={'default'}
-                        className={'rounded font-bold mr-2'}>Screen 4</Button>
-
-                <Button htmlType={'submit'}
-                        type={'primary'}
-                        className={'rounded font-bold'} icon={<i className={'fa fa-plus mr-2'}></i>}>Add Region</Button>
-
-            </div>
-
-            <div className={'col-span-12 border border-gray-200 bg-gray-100 p-2 rounded'}>
-
-
+            {selectedRegion && selectedScreen && <div className={'col-span-12 border border-gray-200 bg-gray-100 p-2 rounded'}>
                 <div className={'grid grid-cols-12'}>
                     <div className={'col-span-2 lg:col-span-1 p-1 text-center h-10 flex justify-center'}>
                         <div className={'rounded h-full w-1/2  border bg-white'}>
@@ -125,65 +300,7 @@ function ContentScreen(props) {
 
 
                 </div>
-
-
-                {/*<div className={'grid grid-cols-12'}>*/}
-                {/*    <div className={'md:col-span-2 p-2 text-center h-96 mt-2'}>*/}
-                {/*        <div className={'grid grid-cols-12 border-2 border-edorble-100 bg-white rounded h-full'}>*/}
-                {/*            <div className={'col-span-12 mt-2'}>*/}
-                {/*                <i className={'fa fa-plus-circle text-5xl bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-green-700'}></i>*/}
-                {/*            </div>*/}
-                {/*            <div className={'col-span-12 mt-4'}>*/}
-                {/*                <i className={'fa fa-plus-circle text-5xl bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-green-700'}></i>*/}
-                {/*            </div>*/}
-                {/*            <div className={'col-span-12 mt-4'}>*/}
-                {/*                <i className={'fa fa-plus-circle text-5xl bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-green-700'}></i>*/}
-                {/*            </div>*/}
-                {/*            <div className={'col-span-12 mt-4'}>*/}
-                {/*                <i className={'fa fa-plus-circle text-5xl bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-green-700'}></i>*/}
-                {/*            </div>*/}
-                {/*            <div className={'col-span-12 mt-4'}>*/}
-                {/*                <i className={'fa fa-plus-circle text-5xl bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-green-700'}></i>*/}
-                {/*            </div>*/}
-                {/*        </div>*/}
-                {/*    </div>*/}
-
-                {/*    /!*<div className={'col-span-1 p-2 text-center h-96 mt-2'}>*!/*/}
-                {/*    /!*    <div className={'grid grid-cols-12 border-2 border-edorble-100 bg-white rounded h-full'}>*!/*/}
-                {/*    /!*        <div className={'col-span-12 mt-2'}>*!/*/}
-                {/*    /!*            <i className={'fa fa-plus-circle text-5xl bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-green-700'}></i>*!/*/}
-                {/*    /!*        </div>*!/*/}
-                {/*    /!*        <div className={'col-span-12 mt-4'}>*!/*/}
-                {/*    /!*            <i className={'fa fa-plus-circle text-5xl bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-green-700'}></i>*!/*/}
-                {/*    /!*        </div>*!/*/}
-                {/*    /!*        <div className={'col-span-12 mt-4'}>*!/*/}
-                {/*    /!*            <i className={'fa fa-plus-circle text-5xl bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-green-700'}></i>*!/*/}
-                {/*    /!*        </div>*!/*/}
-                {/*    /!*        <div className={'col-span-12 mt-4'}>*!/*/}
-                {/*    /!*            <i className={'fa fa-plus-circle text-5xl bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-green-700'}></i>*!/*/}
-                {/*    /!*        </div>*!/*/}
-                {/*    /!*        <div className={'col-span-12 mt-4'}>*!/*/}
-                {/*    /!*            <i className={'fa fa-plus-circle text-5xl bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-green-700'}></i>*!/*/}
-                {/*    /!*        </div>*!/*/}
-                {/*    /!*    </div>*!/*/}
-                {/*    /!*</div>*!/*/}
-
-                {/*    <div className={'md:col-span-8 p-2 text-center h-96 mt-2'}>*/}
-                {/*        <div className={'border-2 border-edorble-100 rounded bg-white h-full'}>*/}
-
-                {/*        </div>*/}
-                {/*    </div>*/}
-
-                {/*    <div className={'md:col-span-2 p-2 text-center h-96 mt-2'}>*/}
-                {/*        <div className={'border-2 border-edorble-100 rounded h-full bg-white'}>*/}
-
-                {/*        </div>*/}
-
-                {/*    </div>*/}
-                {/*</div>*/}
-
-
-            </div>
+            </div>}
 
 
         </>

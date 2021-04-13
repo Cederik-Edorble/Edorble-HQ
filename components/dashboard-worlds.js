@@ -8,8 +8,8 @@ function NewWorldForm (props) {
 
     const fetchMaps = async () => {
         let res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/maps?token=${localStorage.getItem('token')}`)
-        let data = await res.json();
-        setMaps(data.data);
+        let json = await res.json();
+        setMaps(json.data);
     };
 
     useEffect(() => {
@@ -23,7 +23,7 @@ function NewWorldForm (props) {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({name: name})
+            body: JSON.stringify({name: name, map: maps[0]._id})
         })
         props.fetchWorlds()
     };
@@ -206,7 +206,7 @@ function DashboardWorlds(props) {
             </div>}
 
             {props.activeWorld && props.activeTab=='content' && <div className={'grid col-span-12'}>
-                <ContentScreen />
+                <ContentScreen activeWorld={props.activeWorld} />
             </div>}
 
             {!props.activeWorld && <>
