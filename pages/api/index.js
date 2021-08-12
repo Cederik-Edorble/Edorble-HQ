@@ -13,6 +13,7 @@ const resolvers = {
   Query: {
     getUsers: () => users,
     getWorlds: () => worlds,
+    getWorld: (_, { id }) => worlds.find((w) => w.id === id),
     getMaps: () => maps,
     getRegions: () => regions,
     getUser: (_, { id }) => users.find((u) => u.id === id),
