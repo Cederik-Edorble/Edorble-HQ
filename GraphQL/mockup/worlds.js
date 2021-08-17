@@ -2,6 +2,7 @@ const worlds = [
   {
     id: 1,
     name: 'test1',
+    defaultLogo: 'test1',
     password: null,
     enablePassword: true,
     user: 2,
@@ -12,6 +13,7 @@ const worlds = [
   {
     id: 2,
     name: 'test2',
+    defaultLogo: 'test2',
     password: null,
     enablePassword: false,
     user: 1,
@@ -22,6 +24,7 @@ const worlds = [
   {
     id: 3,
     name: 'test3',
+    defaultLogo: 'test3',
     password: null,
     enablePassword: false,
     user: 1,

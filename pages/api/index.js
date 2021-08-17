@@ -12,8 +12,8 @@ const { worlds } = require('../../GraphQL/mockup/worlds');
 const resolvers = {
   Query: {
     getUsers: () => users,
-    getWorlds: () => worlds,
     getWorld: (_, { id }) => worlds.find((w) => w.id === id),
+    getWorlds: () => worlds,
     getMaps: () => maps,
     getRegions: () => regions,
     getUser: (_, { id }) => users.find((u) => u.id === id),
@@ -21,7 +21,7 @@ const resolvers = {
     getUserMaps: (_, { user }) => maps.filter((m) => m.user === user),
     getMapRegion: (_, { map }) => regions.filter((r) => r.map === map),
     getRegionScreen: (_, { region }) => screens.filter((s) => s.region === region),
-    getScreenContent: (_, { screen }) => contents.filter((c) => c.screen === screen),
+    getScreenContent: (_, { screen, world }) => contents.filter((c) => c.screen === screen && c.world === world),
     authUser: (_, { input: { email, password } }) => {
       const user = users.find((u) => u.email === email);
       if (user) {
@@ -93,7 +93,7 @@ const resolvers = {
       return screens.filter((s) => s.region === region);
     },
     addContent: (_, { input }) => {
-      const { screen } = input;
+      const { screen, world } = input;
       // update
       if (input.id) {
         const i = contents.findIndex((s) => s.id === input.id && s.screen === screen);
@@ -101,7 +101,7 @@ const resolvers = {
           const temp = { ...contents[i], ...input };
           contents.splice(i, 1, temp);
         }
-        return contents.filter((c) => c.screen === screen);
+        return contents.filter((c) => c.screen === screen && c.world === world);
       }
       // add new
 
@@ -111,7 +111,7 @@ const resolvers = {
         ...input, id, created
       };
       contents.push(content);
-      return contents.filter((c) => c.screen === screen);
+      return contents.filter((c) => c.screen === screen && c.world === world);
     },
     deleteContent(_, { id }) {
       const i = contents.findIndex((c) => c.id === id);

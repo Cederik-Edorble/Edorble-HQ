@@ -6,6 +6,7 @@ const NewWorldForm = ({
   activeWorld, updateWorld, createWorld, deleteWorld
 }) => {
   const [name, setName] = useState(activeWorld ? activeWorld.name : '');
+  const [defaultLogo, setLogo] = useState(activeWorld ? activeWorld.defaultLogo : '');
 
   const create = async (ev) => {
     ev.preventDefault();
@@ -14,6 +15,7 @@ const NewWorldForm = ({
         createWorldInput: {
           user: +localStorage.getItem('userId'),
           name,
+          defaultLogo,
         },
       },
     });
@@ -27,6 +29,7 @@ const NewWorldForm = ({
           user: +localStorage.getItem('userId'),
           id: +activeWorld.id,
           name,
+          defaultLogo,
         },
       },
     });
@@ -57,6 +60,21 @@ const NewWorldForm = ({
                   w-full
                   rounded"
                 placeholder="World Name"
+              />
+            </Col>
+            <Col span={24} className="mt-5">
+              <input
+                type="text"
+                onChange={(ev) => setLogo(ev.currentTarget.value)}
+                value={defaultLogo}
+                required
+                className="border-2
+                  border-edorble-200
+                  hover:border-edorble-200
+                  focus:border-edorble-200
+                  w-full
+                  rounded"
+                placeholder="World logo"
               />
             </Col>
             <Col span={24} className="mt-5">
@@ -98,6 +116,7 @@ NewWorldForm.propTypes = {
   activeWorld: PropTypes.shape({
     name: PropTypes.string,
     id: PropTypes.number,
+    defaultLogo: PropTypes.string,
   }),
   updateWorld: PropTypes.func.isRequired,
   createWorld: PropTypes.func.isRequired,
