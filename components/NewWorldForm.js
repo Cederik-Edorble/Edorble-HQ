@@ -34,7 +34,11 @@ const NewWorldForm = ({
       },
     });
   };
-
+  const urlValidator = (val) => {
+    const regex = new RegExp('^(?:http(s)?:\\/\\/)?[\\w.-]+(?:\\.[\\w\\.-]+)'
+      + "+[\\w\\-\\._~:/?#[\\]@!\\$&'\\(\\)\\*\\+,;=.]+$");
+    return !!(val.match(regex));
+  };
   const remove = async (id) => {
     deleteWorld({
       variables: {
@@ -74,22 +78,33 @@ const NewWorldForm = ({
                   focus:border-edorble-200
                   w-full
                   rounded"
-                placeholder="World logo"
+                placeholder="World logo (url)"
               />
+              {
+                !urlValidator(defaultLogo)
+                && defaultLogo
+                && <small className="text-red-500 font-bold">Url don&apos;t match</small>
+              }
+
             </Col>
             <Col span={24} className="mt-5">
-              <Button
-                loading={false}
-                htmlType="submit"
-                className="border-0
+              {
+                urlValidator(defaultLogo)
+                && defaultLogo && (
+                  <Button
+                    loading={false}
+                    htmlType="submit"
+                    className="border-0
                   bg-edorble-yellow-500
                   hover:bg-edorble-yellow-600
                   hover:text-black
                   w-full
                   rounded font-bold"
-              >
-                Submit
-              </Button>
+                  >
+                    Submit
+                  </Button>
+                )
+              }
             </Col>
             { activeWorld?.id
             && (
