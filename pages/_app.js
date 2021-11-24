@@ -1,15 +1,13 @@
 import '../styles/globals.css';
-
 import {
   ApolloClient,
   InMemoryCache,
   ApolloProvider,
 } from '@apollo/client';
 import PropTypes from 'prop-types';
-import { API_URL } from '../commons/Api';
 
 const client = new ApolloClient({
-  uri: API_URL,
+  uri: process.env.API_URL,
   cache: new InMemoryCache(),
   defaultOptions: {
     watchQuery: {

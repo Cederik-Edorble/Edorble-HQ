@@ -14,6 +14,7 @@ export default function Home() {
   const [password, setPassword] = useState('admin');
   const [retypePassword, setRetypePassword] = useState('');
   const [loading, setLoading] = useState(false);
+
   const authHandler = (data) => {
     const { authUser, createUser } = data;
     setLoading(false);
@@ -109,7 +110,7 @@ export default function Home() {
 
       <div className="centered">
 
-        <div className="flex align-center justify-center w-full z-50 mt-10" style={{ zIndex: '1000'}}>
+        <div className="flex align-center justify-center w-full z-50 mt-10" style={{ zIndex: '1000' }}>
           <h1 className="text-center text-6xl md:text-8xl font-bold text-edorble-500">
             ed
             <span>
@@ -125,7 +126,7 @@ export default function Home() {
 
         <div
           className="flex align-center justify-center w-screen z-50 mt-10"
-          style={{ zIndex: '1000'}}
+          style={{ zIndex: '1000' }}
         >
           <Row type="flex" align="center" gutter={24} className="w-full md:w-1/2 lg:w-1/3 p-2">
             <Col>
@@ -197,10 +198,8 @@ export default function Home() {
                   </Col>
                 </Row>
               </form>
-
             </Col>
             )}
-
             {currentTab === 'signup'
             && (
             <Col
