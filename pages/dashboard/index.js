@@ -1,35 +1,43 @@
 import React, { useState, useEffect } from 'react';
-import Head from 'next/head';
+import { useRouter } from 'next/router';
 import Navbar from '../../components/Navbar';
-
 import DownloadEdorble from '../../components/DownloadEdorble';
 import DashboardNav from '../../components/DashboardNav';
 import Dashboard from '../../components/Dashboard';
+import constant from '../../constants/routes';
+import items from '../../constants/items';
+import { getStringStorage } from '../../Utils/storageWorks';
 
-function Index() {
+const Index = () => {
+  const router = useRouter();
+  const [activeWorld, setActiveWorld] = useState(null);
+  const [activeTab, setActiveTab] = useState(items.worlds);
+  const [activeMap, setActiveMap] = useState(null);
+
+  const redirectHandler = (path) => router.push(`${path}`).then(() => window.scrollTo(0, 0));
+
+  const goMainPage = () => redirectHandler(constant.home);
+
+  const goDashboard = () => redirectHandler(constant.dashboard);
+
+  const logout = async () => {
+    localStorage.removeItem(items.token);
+    goMainPage();
+  };
+  
   useEffect(() => {
     if (window) {
-      const token = localStorage.getItem('token');
-      const userId = localStorage.getItem('userId');
+      const token = getStringStorage(items.token);
+      const userId = getStringStorage(items.userId);
       if (!token || !userId) {
-        window.location.href = '/';
+        goMainPage();
       }
     }
   }, []);
-  const [activeWorld, setActiveWorld] = useState(null);
-  const [activeTab, setActiveTab] = useState('worlds');
-  const [activeMap, setActiveMap] = useState(null);
+  
   return (
     <>
-      <Navbar />
-      <Head>
-        <link
-          rel="stylesheet"
-          href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
-          integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN"
-          crossOrigin="anonymous"
-        />
-      </Head>
+      <Navbar goDashboard={goDashboard} logout={logout} />
       <div className="grid grid-cols-12 gap-4 p-2">
         <DownloadEdorble />
         <div className="col-span-12 md:col-span-8 border border-edorble-400 rounded">
@@ -57,6 +65,6 @@ function Index() {
       </div>
     </>
   );
-}
+};
 
 export default Index;

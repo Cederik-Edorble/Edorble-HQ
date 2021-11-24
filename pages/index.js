@@ -3,26 +3,36 @@ import {
   Button, Col, notification, Row 
 } from 'antd';
 import { useLazyQuery, useMutation } from '@apollo/client';
-import { AUTH_USER, CREATE_USER } from '../GraphQL/user/query';
+import { useRouter } from 'next/router';
+import request from '../request/user';
 import {
   EARTH_ICON, MAIN_VIDEO, MAIN_VIDEO_WEB, PRELOAD_IMG 
 } from '../commons/Content';
+import constant from '../constants/routes';
+import items from '../constants/items';
 
 export default function Home() {
+  const router = useRouter();
+  const { AUTH_USER, CREATE_USER } = request;
   const [currentTab, setCurrentTab] = useState('login');
   const [email, setEmail] = useState('admin@gmail.com');
   const [password, setPassword] = useState('admin');
   const [retypePassword, setRetypePassword] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const redirectHandler = (path) => router.push(`${path}`).then(() => window.scrollTo(0, 0));
+
+  const goDashboard = () => redirectHandler(constant.dashboard);
+
   const authHandler = (data) => {
     const { authUser, createUser } = data;
     setLoading(false);
     if (authUser || createUser) {
       const token = authUser?.token || createUser?.token;
       const userId = authUser?.id || createUser?.id;
-      localStorage.setItem('token', token);
-      localStorage.setItem('userId', userId);
-      window.location.href = '/dashboard';
+      localStorage.setItem(items.token, token);
+      localStorage.setItem(items.userId, userId);
+      goDashboard();
     } else {
       notification.error({
         message: 'Password error',
@@ -50,10 +60,10 @@ export default function Home() {
   });
   useEffect(() => {
     if (window) {
-      const token = localStorage.getItem('token');
-      const userId = localStorage.getItem('userId');
+      const token = localStorage.getItem(items.token);
+      const userId = localStorage.getItem(items.userId);
       if (token && userId) {
-        window.location.href = '/dashboard';
+        goDashboard();
       }
     }
   }, []);
@@ -109,7 +119,7 @@ export default function Home() {
 
       <div className="centered">
 
-        <div className="flex align-center justify-center w-full z-50 mt-10" style={{ zIndex: '1000'}}>
+        <div className="flex align-center justify-center w-full z-50 mt-10" style={{ zIndex: '1000' }}>
           <h1 className="text-center text-6xl md:text-8xl font-bold text-edorble-500">
             ed
             <span>
@@ -125,7 +135,7 @@ export default function Home() {
 
         <div
           className="flex align-center justify-center w-screen z-50 mt-10"
-          style={{ zIndex: '1000'}}
+          style={{ zIndex: '1000' }}
         >
           <Row type="flex" align="center" gutter={24} className="w-full md:w-1/2 lg:w-1/3 p-2">
             <Col>
@@ -197,10 +207,8 @@ export default function Home() {
                   </Col>
                 </Row>
               </form>
-
             </Col>
             )}
-
             {currentTab === 'signup'
             && (
             <Col
