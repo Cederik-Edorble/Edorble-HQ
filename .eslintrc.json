@@ -22,7 +22,6 @@
         "no-trailing-spaces": 0,
         "comma-dangle": 0,
         "radix": 0,
-        "commonjs": true,
         "max-len": [
             2,
             {

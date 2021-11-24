@@ -1,30 +1,11 @@
 import '../styles/globals.css';
-import {
-  ApolloClient,
-  InMemoryCache,
-  ApolloProvider,
-} from '@apollo/client';
+import Apollo from '../layouts/Apollo/Apollo';
 import PropTypes from 'prop-types';
 
-const client = new ApolloClient({
-  uri: process.env.API_URL,
-  cache: new InMemoryCache(),
-  defaultOptions: {
-    watchQuery: {
-      fetchPolicy: 'no-cache',
-    },
-  },
-});
+const App = (props) => <Apollo {...props} />;
 
-function MyApp({ Component, pageProps }) {
-  return (
-    <ApolloProvider client={client}>
-      <Component {...pageProps} />
-    </ApolloProvider>
-  );
-}
-MyApp.propTypes = {
+App.propTypes = {
   Component: PropTypes.oneOfType([PropTypes.func, PropTypes.object]).isRequired,
   pageProps: PropTypes.shape({}).isRequired
 };
-export default MyApp;
+export default App;

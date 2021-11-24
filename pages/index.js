@@ -3,17 +3,26 @@ import {
   Button, Col, notification, Row 
 } from 'antd';
 import { useLazyQuery, useMutation } from '@apollo/client';
-import { AUTH_USER, CREATE_USER } from '../GraphQL/user/query';
+import { useRouter } from 'next/router';
+import request from '../request/user';
 import {
   EARTH_ICON, MAIN_VIDEO, MAIN_VIDEO_WEB, PRELOAD_IMG 
 } from '../commons/Content';
+import constant from '../constants/routes';
+import items from '../constants/items';
 
 export default function Home() {
+  const router = useRouter();
+  const { AUTH_USER, CREATE_USER } = request;
   const [currentTab, setCurrentTab] = useState('login');
   const [email, setEmail] = useState('admin@gmail.com');
   const [password, setPassword] = useState('admin');
   const [retypePassword, setRetypePassword] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const redirectHandler = (path) => router.push(`${path}`).then(() => window.scrollTo(0, 0));
+
+  const goDashboard = () => redirectHandler(constant.dashboard);
 
   const authHandler = (data) => {
     const { authUser, createUser } = data;
@@ -21,9 +30,9 @@ export default function Home() {
     if (authUser || createUser) {
       const token = authUser?.token || createUser?.token;
       const userId = authUser?.id || createUser?.id;
-      localStorage.setItem('token', token);
-      localStorage.setItem('userId', userId);
-      window.location.href = '/dashboard';
+      localStorage.setItem(items.token, token);
+      localStorage.setItem(items.userId, userId);
+      goDashboard();
     } else {
       notification.error({
         message: 'Password error',
@@ -51,10 +60,10 @@ export default function Home() {
   });
   useEffect(() => {
     if (window) {
-      const token = localStorage.getItem('token');
-      const userId = localStorage.getItem('userId');
+      const token = localStorage.getItem(items.token);
+      const userId = localStorage.getItem(items.userId);
       if (token && userId) {
-        window.location.href = '/dashboard';
+        goDashboard();
       }
     }
   }, []);

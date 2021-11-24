@@ -8,3 +8,5 @@ export const removeLocalStorage = (key) => {
 
 export const getFromLocalStorage = (key) => window.localStorage.getItem(key)
  && JSON.parse(window.localStorage.getItem(key));
+
+export const getStringStorage = (key) => window.localStorage.getItem(key);
