@@ -44,6 +44,7 @@ const WorldsList = ({
                   activeWorld={activeWorld}
                   createWorld={createWorld}
                   updateWorld={updateWorld}
+                  earthIcon={EARTH_ICON}
                 />
               );
             }}

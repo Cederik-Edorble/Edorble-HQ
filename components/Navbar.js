@@ -1,13 +1,10 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Menu, Dropdown, Button } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import { EARTH_ICON, LOGO_ONLY } from '../commons/Content';
 
-const Navbar = () => {
-  const logout = async () => {
-    localStorage.removeItem('token');
-    window.location.href = '/';
-  };
+const Navbar = ({ goDashboard, logout }) => {
   const menu = (
     <Menu size="large" selectedKeys={['0']}>
       <Menu.Item key="0">
@@ -77,7 +74,13 @@ const Navbar = () => {
         md:grid p-3"
       >
         <div className="col-span-3">
-          <h1 className="text-center text-xl font-bold text-white float-left">
+          <span
+            className="text-center text-xl font-bold text-white float-left"
+            onClick={goDashboard}
+            role="button"
+            tabIndex={0}
+            onKeyPress={() => {}}
+          >
             ed
             <span>
               <img
@@ -87,7 +90,7 @@ const Navbar = () => {
               />
             </span>
             rble
-          </h1>
+          </span>
         </div>
 
         <div className="col-span-9">
@@ -109,6 +112,15 @@ const Navbar = () => {
       </div>
     </>
   );
+};
+
+Navbar.propTypes = {
+  goDashboard: PropTypes.func,
+  logout: PropTypes.func,
+};
+Navbar.defaultProps = {
+  goDashboard: () => {},
+  logout: () => {},
 };
 
 export default Navbar;

@@ -3,7 +3,7 @@ import { Button, Col, Row } from 'antd';
 import PropTypes from 'prop-types';
 
 const NewWorldForm = ({
-  activeWorld, updateWorld, createWorld, deleteWorld
+  activeWorld, updateWorld, createWorld, deleteWorld, earthIcon
 }) => {
   const [name, setName] = useState(activeWorld ? activeWorld.name : '');
   const [defaultLogo, setLogo] = useState(activeWorld ? activeWorld.defaultLogo : '');
@@ -15,7 +15,7 @@ const NewWorldForm = ({
         createWorldInput: {
           user: +localStorage.getItem('userId'),
           name,
-          defaultLogo,
+          defaultLogo: `${earthIcon}`
         },
       },
     });
@@ -46,6 +46,7 @@ const NewWorldForm = ({
       },
     });
   };
+
   return (
     <div className="grid grid-cols-12">
       <div className="col-span-12">
@@ -136,9 +137,11 @@ NewWorldForm.propTypes = {
   updateWorld: PropTypes.func.isRequired,
   createWorld: PropTypes.func.isRequired,
   deleteWorld: PropTypes.func,
+  earthIcon: PropTypes.string
 };
 
 NewWorldForm.defaultProps = {
+  earthIcon: '',
   activeWorld: {},
   deleteWorld: () => {}
 };
