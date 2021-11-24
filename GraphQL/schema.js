@@ -17,6 +17,7 @@ const typeDefs = gql`
     id:Int
     accessCode:Int
     name:String
+    defaultLogo:String
     password:String
     enablePassword:Boolean
     user:Int
@@ -25,6 +26,7 @@ const typeDefs = gql`
   }
   input WorldCreteInput{
     name:String!
+    defaultLogo:String!
     user:Int!
     map:Int
   }
@@ -33,6 +35,7 @@ const typeDefs = gql`
     user:Int!
     accessCode:Int
     name:String
+    defaultLogo:String
     password:String
     enablePassword:Boolean
     created:String
@@ -44,15 +47,27 @@ const typeDefs = gql`
     name: String
     created:String
     user:Int
+    fileName:String
+    windowsLink:String
+    macLink:String
+    version:String
   }
   input MapInput {
     name:String
     user:Int
+    fileName:String
+    windowsLink:String
+    macLink:String
+    version:String
   }
   input MapUpdateInput{
     id:Int
     name:String
     user:Int
+    fileName:String
+    windowsLink:String
+    macLink:String
+    version:String
   }
   type Region{
     id:Int
@@ -88,6 +103,7 @@ const typeDefs = gql`
   type Content{
     id:Int
     screen:Int
+    world:Int
     type:String
     url:String
     description:String
@@ -98,6 +114,7 @@ const typeDefs = gql`
   input ContentInput{
     id:Int
     screen:Int
+    world:Int
     type:String
     url:String
     description:String
@@ -116,7 +133,7 @@ const typeDefs = gql`
     getMapRegion(map:Int):[Region]!
     getRegionScreen(region:Int):[Screen]!
     getRegions:[Region]
-    getScreenContent(screen:Int):[Content]!
+    getScreenContent(screen:Int,world:Int):[Content]!
   }
   type Mutation{
     createUser(input:UserInput):User

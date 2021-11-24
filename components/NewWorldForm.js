@@ -6,6 +6,7 @@ const NewWorldForm = ({
   activeWorld, updateWorld, createWorld, deleteWorld, earthIcon
 }) => {
   const [name, setName] = useState(activeWorld ? activeWorld.name : '');
+  const [defaultLogo, setLogo] = useState(activeWorld ? activeWorld.defaultLogo : '');
 
   const create = async (ev) => {
     ev.preventDefault();
@@ -28,11 +29,16 @@ const NewWorldForm = ({
           user: +localStorage.getItem('userId'),
           id: +activeWorld.id,
           name,
+          defaultLogo,
         },
       },
     });
   };
-
+  const urlValidator = (val) => {
+    const regex = new RegExp('^(?:http(s)?:\\/\\/)?[\\w.-]+(?:\\.[\\w\\.-]+)'
+      + "+[\\w\\-\\._~:/?#[\\]@!\\$&'\\(\\)\\*\\+,;=.]+$");
+    return !!(val.match(regex));
+  };
   const remove = async (id) => {
     deleteWorld({
       variables: {
@@ -62,18 +68,44 @@ const NewWorldForm = ({
               />
             </Col>
             <Col span={24} className="mt-5">
-              <Button
-                loading={false}
-                htmlType="submit"
-                className="border-0
+              <input
+                type="text"
+                onChange={(ev) => setLogo(ev.currentTarget.value)}
+                value={defaultLogo}
+                required
+                className="border-2
+                  border-edorble-200
+                  hover:border-edorble-200
+                  focus:border-edorble-200
+                  w-full
+                  rounded"
+                placeholder="World logo (url)"
+              />
+              {
+                !urlValidator(defaultLogo)
+                && defaultLogo
+                && <small className="text-red-500 font-bold">Url don&apos;t match</small>
+              }
+
+            </Col>
+            <Col span={24} className="mt-5">
+              {
+                urlValidator(defaultLogo)
+                && defaultLogo && (
+                  <Button
+                    loading={false}
+                    htmlType="submit"
+                    className="border-0
                   bg-edorble-yellow-500
                   hover:bg-edorble-yellow-600
                   hover:text-black
                   w-full
                   rounded font-bold"
-              >
-                Submit
-              </Button>
+                  >
+                    Submit
+                  </Button>
+                )
+              }
             </Col>
             { activeWorld?.id
             && (
@@ -100,6 +132,7 @@ NewWorldForm.propTypes = {
   activeWorld: PropTypes.shape({
     name: PropTypes.string,
     id: PropTypes.number,
+    defaultLogo: PropTypes.string,
   }),
   updateWorld: PropTypes.func.isRequired,
   createWorld: PropTypes.func.isRequired,

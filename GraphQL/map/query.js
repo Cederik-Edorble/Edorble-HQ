@@ -6,6 +6,10 @@ export const GET_USER_MAP = gql`
       id
       name
       user
+      fileName
+      windowsLink
+      macLink
+      version
       created
     }
   }
@@ -17,6 +21,10 @@ export const CREATE_USER_MAP = gql`
       id
       name
       user
+      fileName
+      windowsLink
+      macLink
+      version
     }
   }
 `;
@@ -27,6 +35,10 @@ export const UPDATE_USER_MAP = gql`
         id
         name
         user
+        fileName
+        windowsLink
+        macLink
+        version
       }
   }
 `;
@@ -36,6 +48,10 @@ export const DELETE_USER_MAP = gql`
       id
       name
       user
+      fileName
+      windowsLink
+      macLink
+      version
     }
   }
 `;

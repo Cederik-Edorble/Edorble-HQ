@@ -1,10 +1,11 @@
 import { gql } from '@apollo/client';
 
 export const GET_SCREEN_CONTENT = gql`
-  query getScreenContent($screen: Int) {
-    getScreenContent(screen: $screen) {
+  query getScreenContent($screen: Int,$world:Int) {
+    getScreenContent(screen: $screen,world:$world) {
       id
       screen
+      world
       created
       description
       title
@@ -19,6 +20,7 @@ export const ADD_SCREEN_CONTENT = gql`
     addContent(input: $contentInput ){
       id
       screen
+      world
       type
       url
       description
@@ -32,6 +34,7 @@ export const DELETE_SCREEN_CONTENT = gql`
     deleteContent(id: $id ){
       id
       screen
+      world
       type
       url
       description

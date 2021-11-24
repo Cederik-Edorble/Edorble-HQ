@@ -96,6 +96,7 @@ const ContentScreen = ({ activeWorld }) => {
       fetchContent({
         variables: {
           screen: selectedScreen.id,
+          world: activeWorld.id
         },
       });
     }
@@ -218,6 +219,7 @@ const ContentScreen = ({ activeWorld }) => {
                         content={content}
                         createContent={createContent}
                         deleteContent={deleteContent}
+                        activeWorld={activeWorld}
                       />
                     );
                   }}
