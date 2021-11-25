@@ -3,7 +3,7 @@ import { Button, Col, Row } from 'antd';
 import PropTypes from 'prop-types';
 
 const NewWorldForm = ({
-  activeWorld, updateWorld, createWorld, deleteWorld, earthIcon
+  activeWorld, createWorld, earthIcon
 }) => {
   const [name, setName] = useState(activeWorld ? activeWorld.name : '');
 
@@ -11,8 +11,8 @@ const NewWorldForm = ({
     ev.preventDefault();
     await createWorld({
       variables: {
-        createWorldInput: {
-          user: +localStorage.getItem('userId'),
+        objects: {
+          Owner_UserID: +localStorage.getItem('userId'),
           name,
           defaultLogo: `${earthIcon}`
         },
@@ -22,23 +22,10 @@ const NewWorldForm = ({
 
   const update = async (ev) => {
     ev.preventDefault();
-    await updateWorld({
-      variables: {
-        updateWorldInput: {
-          user: +localStorage.getItem('userId'),
-          id: +activeWorld.id,
-          name,
-        },
-      },
-    });
   };
 
-  const remove = async (id) => {
-    deleteWorld({
-      variables: {
-        id
-      },
-    });
+  const remove = async () => {
+  
   };
 
   return (
@@ -101,16 +88,13 @@ NewWorldForm.propTypes = {
     name: PropTypes.string,
     id: PropTypes.number,
   }),
-  updateWorld: PropTypes.func.isRequired,
   createWorld: PropTypes.func.isRequired,
-  deleteWorld: PropTypes.func,
   earthIcon: PropTypes.string
 };
 
 NewWorldForm.defaultProps = {
   earthIcon: '',
   activeWorld: {},
-  deleteWorld: () => {}
 };
 
 export default NewWorldForm;

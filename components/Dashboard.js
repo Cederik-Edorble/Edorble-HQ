@@ -6,17 +6,15 @@ import { useLazyQuery, useMutation } from '@apollo/client';
 import PropTypes from 'prop-types';
 import ContentScreen from './ContentScreen';
 import {
-  GET_USER_WORLDS,
   UPDATE_USER_WORLD,
-  CREATE_USER_WORLD,
   DELETE_USER_WORLD,
 } from '../GraphQL/world/query';
 import {
-  CREATE_USER_MAP,
   DELETE_USER_MAP,
-  GET_USER_MAP,
   UPDATE_USER_MAP,
 } from '../GraphQL/map/query';
+import requestWorld from '../request/worlds';
+import requestMap from '../request/map';
 import MapList from './MapList';
 import MapSettings from './MapSettings';
 import WorldsList from './WorldsList';
@@ -24,17 +22,16 @@ import MapScreens from './MapScreens';
 import WorldsSettings from './WorldsSettings';
 
 const Dashboard = (props) => {
+  const { GET_WORLDS, CREATE_WORLD } = requestWorld;
+  const { GET_MAPS, CREATE_MAP } = requestMap;
   const [showModal, setShowModal] = useState(null);
   const [drawerTitle, setDrawerTitle] = useState();
   const [worlds, setWorlds] = useState(null);
   const [password, setPassword] = useState('');
   const [retypePassword, setRetypePassword] = useState('');
   const [maps, setMaps] = useState(false);
+  const [userId, setUserId] = useState(null);
 
-  const createWorldHandler = ({ createWorld }) => {
-    setWorlds(createWorld);
-    setShowModal(null);
-  };
   const updateWorldHandler = ({ updateWorld }) => {
     const { setActiveWorld } = props;
     setActiveWorld(updateWorld[0]);
@@ -52,9 +49,9 @@ const Dashboard = (props) => {
     setMaps(updateMap);
     setShowModal(null);
   };
-  const getWorldHandler = ({ getUserWorld }) => setWorlds(getUserWorld);
-  const getMapHandler = ({ getUserMaps }) => setMaps(getUserMaps);
-  const createMapHandler = ({ createMap }) => setMaps(createMap);
+  const getWorldHandler = ({ Worlds }) => setWorlds(Worlds);
+  const getMapHandler = ({ Maps }) => setMaps(Maps);
+ 
   const deleteMapHandler = ({ deleteMap }) => {
     const { setActiveMap, setActiveTab } = props;
     setActiveMap(null);
@@ -69,7 +66,7 @@ const Dashboard = (props) => {
     setActiveTab('worlds');
     setShowModal(null);
   };
-  const [fetchMaps] = useLazyQuery(GET_USER_MAP, {
+  const [fetchMaps] = useLazyQuery(GET_MAPS, {
     onCompleted: (data) => getMapHandler(data),
     onError: () => {
       notification.error({
@@ -78,7 +75,7 @@ const Dashboard = (props) => {
       });
     },
   });
-  const [fetchWorlds] = useLazyQuery(GET_USER_WORLDS, {
+  const [fetchWorlds] = useLazyQuery(GET_WORLDS, {
     onCompleted: (data) => getWorldHandler(data),
     onError: () => {
       notification.error({
@@ -105,24 +102,24 @@ const Dashboard = (props) => {
       });
     },
   });
-  const [createWorld] = useMutation(CREATE_USER_WORLD, {
-    onCompleted: (data) => createWorldHandler(data),
-    onError: () => {
-      notification.error({
-        message: 'Create Error',
-        description: 'Error on create World',
-      });
-    },
+
+  const [createWorld] = useMutation(CREATE_WORLD, {
+    refetchQueries: [
+      {
+        query: GET_WORLDS,
+        variables: { idUser: userId }
+      },
+    ],
   });
-  const [createMap] = useMutation(CREATE_USER_MAP, {
-    onCompleted: (data) => createMapHandler(data),
-    onError: () => {
-      notification.error({
-        message: 'Create Error',
-        description: 'Error on create Map',
-      });
-    },
+
+  const [createMap] = useMutation(CREATE_MAP, {
+    refetchQueries: [
+      {
+        query: GET_MAPS,
+      },
+    ],
   });
+
   const [deleteMap] = useMutation(DELETE_USER_MAP, {
     onCompleted: (data) => deleteMapHandler(data),
     onError: () => {
@@ -144,8 +141,9 @@ const Dashboard = (props) => {
 
   useEffect(() => {
     const ownerId = +localStorage.getItem('userId');
-    fetchWorlds({ variables: { ownerId } });
-    fetchMaps({ variables: { user: ownerId } });
+    setUserId(ownerId);
+    fetchWorlds({ variables: { idUser: ownerId } });
+    fetchMaps();
   }, []);
 
   const {
