@@ -1,48 +1,33 @@
 import React, { useState } from 'react';
 import { Button, Col, Row } from 'antd';
 import PropTypes from 'prop-types';
+import Input from './Input';
+import styles from '../styles/NewMapForm.module.scss';
 
 const NewMapForm = ({
-  createMap, activeMap, updateMap, deleteMap
+  createMap, activeMap, deleteMap
 }) => {
-  const [name, setName] = useState(activeMap.name ?? '');
-  const [fileName, setFileName] = useState(activeMap.fileName ?? '');
-  const [windowsLink, setWindowsLink] = useState(activeMap.windowsLink ?? '');
-  const [macLink, setMacLink] = useState(activeMap.macLink ?? '');
-  const [version, setVersion] = useState(activeMap.version ?? '');
-  const ownerId = +localStorage.getItem('userId');
+  const [fields, setFields] = useState({
+    name: activeMap.name ?? '',
+    fileName: '',
+    windowsLink: '',
+    macLink: '',
+    version: '',
+  });
+
   const create = async (ev) => {
     ev.preventDefault();
     createMap({
       variables: {
-        map: {
-          name,
-          user: ownerId,
-          fileName,
-          windowsLink,
-          macLink,
-          version
-        }
+        object: fields
       }
     });
   };
 
   const update = async (ev) => {
     ev.preventDefault();
-    updateMap({
-      variables: {
-        map: {
-          name,
-          id: activeMap.id,
-          user: ownerId,
-          fileName,
-          windowsLink,
-          macLink,
-          version
-        }
-      }
-    });
   };
+  
   const remove = async (id) => {
     deleteMap({
       variables: {
@@ -50,86 +35,32 @@ const NewMapForm = ({
       },
     });
   };
+
+  const fieldsHandler = (event) => {
+    const { id, value } = event.target;
+    setFields({ ...fields, [id]: value });
+  };
   return (
     <div className="grid grid-cols-12">
       <div className="col-span-12">
         <form onSubmit={Object.keys(activeMap)?.length ? update : create}>
           <Row type="flex" align="center" className="mt-5">
-            <Col span={24} className="mt-5">
-              <input
-                type="text"
-                onChange={(ev) => setName(ev.currentTarget.value)}
-                value={name}
-                required
-                className="border-2
-                  border-edorble-200
-                  hover:border-edorble-200
-                  focus:border-edorble-200
-                  w-full
-                  rounded"
-                placeholder="Map Name"
-              />
-            </Col>
-            <Col span={24} className="mt-5">
-              <input
-                type="text"
-                onChange={(ev) => setFileName(ev.currentTarget.value)}
-                value={fileName}
-                required
-                className="border-2
-                  border-edorble-200
-                  hover:border-edorble-200
-                  focus:border-edorble-200
-                  w-full
-                  rounded"
-                placeholder="Map file name"
-              />
-            </Col>
-            <Col span={24} className="mt-5">
-              <input
-                type="text"
-                onChange={(ev) => setWindowsLink(ev.currentTarget.value)}
-                value={windowsLink}
-                required
-                className="border-2
-                  border-edorble-200
-                  hover:border-edorble-200
-                  focus:border-edorble-200
-                  w-full
-                  rounded"
-                placeholder="Map windows link"
-              />
-            </Col>
-            <Col span={24} className="mt-5">
-              <input
-                type="text"
-                onChange={(ev) => setMacLink(ev.currentTarget.value)}
-                value={macLink}
-                required
-                className="border-2
-                  border-edorble-200
-                  hover:border-edorble-200
-                  focus:border-edorble-200
-                  w-full
-                  rounded"
-                placeholder="Map mac link"
-              />
-            </Col>
-            <Col span={24} className="mt-5">
-              <input
-                type="text"
-                onChange={(ev) => setVersion(ev.currentTarget.value)}
-                value={version}
-                required
-                className="border-2
-                  border-edorble-200
-                  hover:border-edorble-200
-                  focus:border-edorble-200
-                  w-full
-                  rounded"
-                placeholder="Map version"
-              />
-            </Col>
+            {Object.keys(fields).map((item, index) => (
+              <div className={styles.inputBox} key={[index, item].join('_')}>
+                <Input
+                  className="border-2
+                    border-edorble-200
+                    hover:border-edorble-200
+                    focus:border-edorble-200
+                    w-full
+                    rounded"
+                  onChange={fieldsHandler}
+                  placeholder={item}
+                  value={fields[item]}
+                  id={item}
+                />
+              </div>
+            ))}
             <Col span={24} className="mt-5">
               <Button
                 loading={false}
@@ -175,7 +106,6 @@ NewMapForm.propTypes = {
     version: PropTypes.string
   }),
   createMap: PropTypes.func,
-  updateMap: PropTypes.func,
   deleteMap: PropTypes.func,
 };
 
@@ -183,7 +113,6 @@ NewMapForm.defaultProps = {
   activeMap: {},
   deleteMap: () => {},
   createMap: () => {},
-  updateMap: null
 };
 
 export default NewMapForm;
