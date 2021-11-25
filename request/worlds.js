@@ -2,15 +2,11 @@ import gql from 'graphql-tag';
 
 const request = {
   GET_WORLDS: gql`
-    query Worlds ($idUser: Int!) {
-      Worlds(where: {User: {id: {_eq: $idUser}}}) {
+    query Worlds {
+      Worlds {
         id
-        mapID
         name
-        User {
-          email
-          id
-        }
+        defaultLogoURL
       }
     }
   `,
@@ -20,9 +16,6 @@ const request = {
         returning {
           id
           name
-          User {
-            id
-          }
         }
       }
     }

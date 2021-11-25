@@ -142,7 +142,7 @@ const Dashboard = (props) => {
   useEffect(() => {
     const ownerId = +localStorage.getItem('userId');
     setUserId(ownerId);
-    fetchWorlds({ variables: { idUser: ownerId } });
+    fetchWorlds();
     fetchMaps();
   }, []);
 
