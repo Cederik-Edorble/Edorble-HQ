@@ -10,11 +10,6 @@ const request = {
         macLink
         windowsLink
         version
-        Worlds {
-          id
-          name
-          mapID
-        }
       }
     }
   `,

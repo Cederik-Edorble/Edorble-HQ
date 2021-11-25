@@ -6,7 +6,7 @@ const NewWorldForm = ({
   activeWorld, createWorld, earthIcon
 }) => {
   const [name, setName] = useState(activeWorld ? activeWorld.name : '');
-  const [defaultLogo, setLogo] = useState(activeWorld ? activeWorld.defaultLogo : '');
+  const [defaultLogo, setLogo] = useState(activeWorld ? activeWorld.defaultLogo : earthIcon);
 
   const create = async (ev) => {
     ev.preventDefault();
@@ -15,7 +15,7 @@ const NewWorldForm = ({
         objects: {
           Owner_UserID: +localStorage.getItem('userId'),
           name,
-          defaultLogo: `${earthIcon}`
+          defaultLogo: `${defaultLogo}`
         },
       },
     });
