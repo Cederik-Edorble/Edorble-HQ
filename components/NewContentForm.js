@@ -5,7 +5,7 @@ import {
 import PropTypes from 'prop-types';
 
 const NewContentForm = ({
-  content, selectedScreen, createContent, deleteContent 
+  content, selectedScreen, createContent, deleteContent, activeWorld
 }) => {
   const [title, setTitle] = useState(content?.title ?? '');
   const [url, setUrl] = useState(content?.url ?? '');
@@ -19,6 +19,7 @@ const NewContentForm = ({
         contentInput: {
           screen: +selectedScreen.id,
           id: content?.id ?? null,
+          world: activeWorld?.id ?? null,
           title,
           url,
           description,
@@ -149,8 +150,12 @@ NewContentForm.propTypes = {
     description: PropTypes.string,
     url: PropTypes.string,
     type: PropTypes.string,
-    id: PropTypes.number
+    id: PropTypes.number,
+    world: PropTypes.number,
   }),
+  activeWorld: PropTypes.shape({
+    id: PropTypes.number
+  }).isRequired,
   selectedScreen: PropTypes.shape({
     id: PropTypes.number,
     name: PropTypes.string,

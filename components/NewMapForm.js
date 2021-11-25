@@ -100,6 +100,10 @@ NewMapForm.propTypes = {
   activeMap: PropTypes.shape({
     name: PropTypes.string,
     id: PropTypes.number,
+    fileName: PropTypes.string,
+    windowsLink: PropTypes.string,
+    macLink: PropTypes.string,
+    version: PropTypes.string
   }),
   createMap: PropTypes.func,
   deleteMap: PropTypes.func,
