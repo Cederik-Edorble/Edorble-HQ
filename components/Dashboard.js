@@ -2,15 +2,10 @@ import React, { useState, useEffect } from 'react';
 import {
   Drawer, notification
 } from 'antd';
-import { useLazyQuery, useMutation } from '@apollo/client';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import PropTypes from 'prop-types';
 import ContentScreen from './ContentScreen';
 import {
-  UPDATE_USER_WORLD,
-  DELETE_USER_WORLD,
-} from '../GraphQL/world/query';
-import {
-  DELETE_USER_MAP,
   UPDATE_USER_MAP,
 } from '../GraphQL/map/query';
 import requestWorld from '../request/worlds';
@@ -22,7 +17,15 @@ import MapScreens from './MapScreens';
 import WorldsSettings from './WorldsSettings';
 
 const Dashboard = (props) => {
-  const { GET_WORLDS, CREATE_WORLD } = requestWorld;
+  const {
+    activeWorld,
+    activeTab,
+    setActiveWorld,
+    setActiveTab,
+    setActiveMap,
+    activeMap,
+  } = props;
+  const { GET_WORLDS, CREATE_WORLD, UPDATE_WORLD } = requestWorld;
   const { GET_MAPS, CREATE_MAP } = requestMap;
   const [showModal, setShowModal] = useState(null);
   const [drawerTitle, setDrawerTitle] = useState();
@@ -31,11 +34,29 @@ const Dashboard = (props) => {
   const [retypePassword, setRetypePassword] = useState('');
   const [maps, setMaps] = useState(false);
   const [userId, setUserId] = useState(null);
+  const [nameWorld, setNameWorld] = useState(activeWorld?.name ? activeWorld?.name : '');
+  const [editName, setEditName] = useState(false);
 
-  const updateWorldHandler = ({ updateWorld }) => {
-    const { setActiveWorld } = props;
-    setActiveWorld(updateWorld[0]);
-    setWorlds(updateWorld);
+  useEffect(() => {
+    setNameWorld(activeWorld?.name);
+  }, [activeWorld]);
+  
+  const nameHandler = (event) => {
+    setNameWorld(event.target.value);
+  };
+
+  const findIndexItem = (array, name, id) => array.findIndex((el) => el[name] === id);
+
+  const changeArrayWorlds = (updateWorlds) => {
+    const oldArray = [...worlds];
+    const findItem = findIndexItem(oldArray, 'id', updateWorlds.id);
+    oldArray[findItem] = updateWorlds;
+    setWorlds(oldArray)
+  };
+
+  const updateWorldHandler = ({ update_Worlds }) => {
+    setActiveWorld(update_Worlds?.returning[0]);
+    changeArrayWorlds(update_Worlds.returning[0]);
     setPassword('');
     setRetypePassword('');
     setShowModal(null);
@@ -43,29 +64,15 @@ const Dashboard = (props) => {
       message: 'Update Success',
     });
   };
+
   const updateMapHandler = ({ updateMap }) => {
-    const { setActiveMap } = props;
     setActiveMap(updateMap[0]);
     setMaps(updateMap);
     setShowModal(null);
   };
   const getWorldHandler = ({ Worlds }) => setWorlds(Worlds);
   const getMapHandler = ({ Maps }) => setMaps(Maps);
- 
-  const deleteMapHandler = ({ deleteMap }) => {
-    const { setActiveMap, setActiveTab } = props;
-    setActiveMap(null);
-    setMaps(deleteMap);
-    setActiveTab('maps');
-    setShowModal(null);
-  };
-  const deleteWorldHandler = ({ deleteWorld }) => {
-    const { setActiveWorld, setActiveTab } = props;
-    setWorlds(deleteWorld);
-    setActiveWorld(null);
-    setActiveTab('worlds');
-    setShowModal(null);
-  };
+  
   const [fetchMaps] = useLazyQuery(GET_MAPS, {
     onCompleted: (data) => getMapHandler(data),
     onError: () => {
@@ -75,6 +82,7 @@ const Dashboard = (props) => {
       });
     },
   });
+
   const [fetchWorlds] = useLazyQuery(GET_WORLDS, {
     onCompleted: (data) => getWorldHandler(data),
     onError: () => {
@@ -84,7 +92,8 @@ const Dashboard = (props) => {
       });
     },
   });
-  const [updateWorld] = useMutation(UPDATE_USER_WORLD, {
+  
+  const [updateWorld] = useMutation(UPDATE_WORLD, {
     onCompleted: (data) => updateWorldHandler(data),
     onError: () => {
       notification.error({
@@ -93,6 +102,7 @@ const Dashboard = (props) => {
       });
     },
   });
+
   const [updateMap] = useMutation(UPDATE_USER_MAP, {
     onCompleted: (data) => updateMapHandler(data),
     onError: () => {
@@ -104,38 +114,18 @@ const Dashboard = (props) => {
   });
 
   const [createWorld] = useMutation(CREATE_WORLD, {
-    refetchQueries: [
-      {
-        query: GET_WORLDS,
-        variables: { idUser: userId }
-      },
-    ],
+    update(_, { data }) {
+      const array = [...worlds];
+      array.push(data?.insert_Worlds?.returning[0]);
+      setWorlds(array);
+    },
   });
 
   const [createMap] = useMutation(CREATE_MAP, {
-    refetchQueries: [
-      {
-        query: GET_MAPS,
-      },
-    ],
-  });
-
-  const [deleteMap] = useMutation(DELETE_USER_MAP, {
-    onCompleted: (data) => deleteMapHandler(data),
-    onError: () => {
-      notification.error({
-        message: 'Delete Error',
-        description: 'Error on delete Map',
-      });
-    },
-  });
-  const [deleteWorld] = useMutation(DELETE_USER_WORLD, {
-    onCompleted: (data) => deleteWorldHandler(data),
-    onError: () => {
-      notification.error({
-        message: 'Delete Error',
-        description: 'Error on delete World',
-      });
+    update(_, { data }) {
+      const array = [...maps];
+      array.push(data?.insert_Maps?.returning[0]);
+      setMaps(array);
     },
   });
 
@@ -145,15 +135,25 @@ const Dashboard = (props) => {
     fetchWorlds();
     fetchMaps();
   }, []);
+  
+  const editTitleHandler = () => {
+    if (!editName) {
+      setEditName(true);
+    } else {
+      if (nameWorld) {
+        updateWorld({
+          variables: {
+            _set: {
+              name: nameWorld
+            },
+            where: { id: { _eq: activeWorld.id } } 
+          },
+        });
+      }
+      setEditName(false);
+    }
+  };
 
-  const {
-    activeWorld,
-    activeTab,
-    setActiveWorld,
-    setActiveTab,
-    setActiveMap,
-    activeMap,
-  } = props;
   return (
     <>
       <Drawer
@@ -171,10 +171,8 @@ const Dashboard = (props) => {
           worlds={worlds}
           setActiveWorld={setActiveWorld}
           setActiveTab={setActiveTab}
-          fetchWorlds={fetchWorlds}
           activeWorld={activeWorld}
           createWorld={createWorld}
-          updateWorld={updateWorld}
           setShowModal={setShowModal}
           setDrawerTitle={setDrawerTitle}
         />
@@ -183,17 +181,16 @@ const Dashboard = (props) => {
       {activeWorld && activeTab === 'settings' && (
         <WorldsSettings
           activeWorld={activeWorld}
-          fetchWorlds={fetchWorlds}
-          createWorld={createWorld}
           updateWorld={updateWorld}
-          deleteWorld={deleteWorld}
-          setShowModal={setShowModal}
-          setDrawerTitle={setDrawerTitle}
           setPassword={setPassword}
           setRetypePassword={setRetypePassword}
           password={password}
           retypePassword={retypePassword}
           maps={maps}
+          nameHandler={nameHandler}
+          nameWorld={nameWorld}
+          editTitleHandler={editTitleHandler}
+          editName={editName}
         />
       )}
 
@@ -218,7 +215,6 @@ const Dashboard = (props) => {
         <MapSettings
           activeMap={activeMap}
           updateMap={updateMap}
-          deleteMap={deleteMap}
           setDrawerBody={setShowModal}
           setDrawerTitle={setDrawerTitle}
           activeTab={activeTab}
@@ -241,7 +237,7 @@ Dashboard.propTypes = {
     id: PropTypes.number,
     accessCode: PropTypes.number,
     enablePassword: PropTypes.bool,
-    map: PropTypes.number,
+    mapID: PropTypes.number,
   }),
   activeMap: PropTypes.shape({
     id: PropTypes.number,

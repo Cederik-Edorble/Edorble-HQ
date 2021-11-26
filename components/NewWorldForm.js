@@ -13,9 +13,10 @@ const NewWorldForm = ({
     await createWorld({
       variables: {
         objects: {
-          Owner_UserID: +localStorage.getItem('userId'),
           name,
-          defaultLogo: `${defaultLogo}`
+          defaultLogoURL: `${defaultLogo}`,
+          mapID: 1,
+          WorldParameters_ID: 1
         },
       },
     });

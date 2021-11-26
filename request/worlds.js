@@ -6,16 +6,34 @@ const request = {
       Worlds {
         id
         name
+        mapID
         defaultLogoURL
+        WorldParameters_ID
       }
     }
   `,
   CREATE_WORLD: gql`
-   mutation insert_Worlds ($objects: Worlds_insert_input!){
+   mutation insert_Worlds ($objects: [Worlds_insert_input!]!){
       insert_Worlds(objects: $objects) {
         returning {
           id
           name
+          mapID
+          defaultLogoURL
+          WorldParameters_ID
+        }
+      }
+    }
+  `,
+  UPDATE_WORLD: gql`
+    mutation update_Worlds($_set: Worlds_set_input, $where: Worlds_bool_exp!) {
+      update_Worlds(where: $where, _set: $_set) {
+        returning {
+          id
+          name
+          mapID
+          defaultLogoURL
+          WorldParameters_ID
         }
       }
     }
