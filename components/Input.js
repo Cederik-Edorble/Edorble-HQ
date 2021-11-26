@@ -1,14 +1,15 @@
 import PropTypes from 'prop-types';
+import styles from '../styles/Input.module.scss';
 
 const Input = ({
-  onChange, value, placeholder, className, id
+  onChange, value, placeholder, className, id, styleType
 }) => (
   <input
     type="text"
     onChange={onChange}
     value={value}
     required
-    className={className}
+    className={className || `${styles[styleType]}`}
     placeholder={placeholder}
     id={id}
   />
@@ -20,6 +21,7 @@ Input.propTypes = {
   placeholder: PropTypes.string,
   className: PropTypes.string,
   id: PropTypes.string,
+  styleType: PropTypes.string,
 };
 
 Input.defaultProps = {
@@ -27,7 +29,8 @@ Input.defaultProps = {
   value: '',
   placeholder: '',
   className: '',
-  id: ''
+  id: '',
+  styleType: '',
 };
 
 export default Input;

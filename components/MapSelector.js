@@ -2,18 +2,18 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 const MapSelector = ({ maps, activeWorld, updateWorld }) => {
-  const [selectMap, setSelectMap] = useState(activeWorld.map);
+  const [selectMap, setSelectMap] = useState(activeWorld.mapID);
+  
   const mapChangeHandler = (e) => {
     const { value } = e.target;
     setSelectMap(value);
     if (value) {
       updateWorld({
         variables: {
-          updateWorldInput: {
-            user: +localStorage.getItem('userId'),
-            id: +activeWorld.id,
-            map: +value ?? null,
+          _set: {
+            mapID: value
           },
+          where: { id: { _eq: activeWorld.id } } 
         },
       });
     }
@@ -38,7 +38,7 @@ MapSelector.propTypes = {
     id: PropTypes.number,
     accessCode: PropTypes.number,
     enablePassword: PropTypes.bool,
-    map: PropTypes.number,
+    mapID: PropTypes.number,
   }).isRequired,
   updateWorld: PropTypes.func.isRequired,
 };

@@ -4,51 +4,24 @@ import {
   Button, Col, Row, Tooltip
 } from 'antd';
 import MapSelector from './MapSelector';
-import NewWorldForm from './NewWorldForm';
-import DrawerTitle from './DrawerTitle';
+import Input from './Input';
+import styles from '../styles/WorldSetting.module.scss';
 
 const WorldsSettings = ({
   activeWorld,
-  fetchWorlds,
   updateWorld,
-  createWorld,
-  deleteWorld,
-  setShowModal,
-  setDrawerTitle,
   maps,
   password,
   retypePassword,
   setPassword,
-  setRetypePassword
+  setRetypePassword,
+  nameHandler,
+  nameWorld,
+  editName,
+  editTitleHandler,
 }) => {
   const [enableEdit, setEnableEdit] = useState(false);
-
-  const updateEnablePassword = async (ev, val) => {
-    ev.preventDefault();
-    await updateWorld({
-      variables: {
-        updateWorldInput: {
-          user: +localStorage.getItem('userId'),
-          id: +activeWorld.id,
-          enablePassword: val,
-        },
-      },
-    });
-  };
-
-  const updatePassword = async (ev) => {
-    ev.preventDefault();
-    await updateWorld({
-      variables: {
-        updateWorldInput: {
-          id: +activeWorld.id,
-          user: +localStorage.getItem('userId'),
-          password,
-        },
-      },
-    });
-  };
-
+ 
   return (
     <div className="grid col-span-12">
       <div className="grid grid-cols-12 gap-2 flex">
@@ -61,33 +34,25 @@ const WorldsSettings = ({
           <br />
         </div>
         <div className="grid col-span-12 md:col-span-8 gap-4 mt-10 md:mt-0">
-          <h1 className="text-4xl text-edorble-300 font-bold w-full">
-            {activeWorld.name}
-            <i
-              className="fa fa-edit float-right text-2xl cursor-pointer mt-1"
-              role="presentation"
-              onClick={() => {
-                setDrawerTitle(
-                  <DrawerTitle
-                    text="Edit World"
+          <div className={styles.container}>
+            <div className={styles.containerTitle}>
+              <h1 className="text-4xl text-edorble-300 font-bold w-full">
+                {!editName ? activeWorld.name : (
+                  <Input
+                    onChange={nameHandler}
+                    value={nameWorld}
+                    styleType="worldSetting"
                   />
-                );
-                setShowModal(
-                  <NewWorldForm
-                    fetchWorlds={fetchWorlds}
-                    activeWorld={activeWorld}
-                    updateWorld={updateWorld}
-                    createWorld={createWorld}
-                    deleteWorld={deleteWorld}
-                  />
-                );
-              }}
-            />
-            <p className="text-edorble-100 font-bold text-lg">
-              Code:
-              {activeWorld.accessCode}
-            </p>
-
+                )}
+              </h1>
+              <h1 className="text-4xl text-edorble-300 font-bold w-full">
+                <i
+                  className="fa fa-edit float-right text-2xl cursor-pointer mt-1"
+                  role="presentation"
+                  onClick={editTitleHandler}
+                />
+              </h1>
+            </div>
             <div className="grid col-span-4 mb-5 mt-5">
               <h1 className="text-4xl text-edorble-300 font-bold w-full">
                 Map
@@ -100,8 +65,7 @@ const WorldsSettings = ({
                 />
               </div>
             </div>
-          </h1>
-
+          </div>
           <div className="grid grid-cols-12 gap-2 p-5 border border-edorble-100 rounded">
             <div className="col-span-12 gap-2 justify-center">
               <p className="text-edorble-400 font-semibold text-2xl">
@@ -111,7 +75,6 @@ const WorldsSettings = ({
                 <Tooltip title="Disable Password">
                   <i
                     className="fa fa-toggle-on text-2xl text-edorble-400 cursor-pointer"
-                    onClick={(ev) => updateEnablePassword(ev, false)}
                     role="presentation"
                   />
                 </Tooltip>
@@ -120,7 +83,6 @@ const WorldsSettings = ({
                 <Tooltip title="Enable Password">
                   <i
                     className="fa fa-toggle-off text-2xl text-edorble-400 cursor-pointer"
-                    onClick={(ev) => updateEnablePassword(ev, true)}
                     role="presentation"
                   />
                 </Tooltip>
@@ -133,7 +95,7 @@ const WorldsSettings = ({
             </div>
             {enableEdit && (
               <div className="col-span-12 gap-2 justify-center">
-                <form onSubmit={updatePassword}>
+                <form>
                   <Row type="flex" align="center" className="mt-5 w-full">
                     <Col span={24} className="mt-5">
                       <input
@@ -200,20 +162,21 @@ WorldsSettings.propTypes = {
     accessCode: PropTypes.number,
     enablePassword: PropTypes.bool,
   }).isRequired,
-  fetchWorlds: PropTypes.func.isRequired,
   updateWorld: PropTypes.func.isRequired,
-  createWorld: PropTypes.func.isRequired,
-  deleteWorld: PropTypes.func,
-  setShowModal: PropTypes.func.isRequired,
-  setDrawerTitle: PropTypes.func,
   maps: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   password: PropTypes.string.isRequired,
   retypePassword: PropTypes.string.isRequired,
   setPassword: PropTypes.func.isRequired,
   setRetypePassword: PropTypes.func.isRequired,
+  nameHandler: PropTypes.func,
+  nameWorld: PropTypes.string,
+  editName: PropTypes.bool,
+  editTitleHandler: PropTypes.func,
 };
 WorldsSettings.defaultProps = {
-  setDrawerTitle: () => {},
-  deleteWorld: () => {}
+  nameHandler: () => {},
+  nameWorld: '',
+  editName: false,
+  editTitleHandler: () => {},
 };
 export default WorldsSettings;

@@ -14,7 +14,7 @@ const request = {
     }
   `,
   CREATE_MAP: gql`
-    mutation insert_Maps($object: Maps_insert_input!) {
+    mutation insert_Maps($object: [Maps_insert_input!]!) {
       insert_Maps(objects: $object) {
         returning {
           name

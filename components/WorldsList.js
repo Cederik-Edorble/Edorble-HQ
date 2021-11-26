@@ -8,10 +8,8 @@ const WorldsList = ({
   worlds,
   setActiveWorld,
   setActiveTab,
-  fetchWorlds,
   activeWorld,
   createWorld,
-  updateWorld,
   setShowModal,
   setDrawerTitle,
 }) => {
@@ -40,10 +38,8 @@ const WorldsList = ({
               setDrawerTitle(<DrawerTitle text="New World" />);
               setShowModal(
                 <NewWorldForm
-                  fetchWorlds={fetchWorlds}
                   activeWorld={activeWorld}
                   createWorld={createWorld}
-                  updateWorld={updateWorld}
                   earthIcon={EARTH_ICON}
                 />
               );
@@ -61,9 +57,7 @@ const WorldsList = ({
 WorldsList.propTypes = {
   setActiveWorld: PropTypes.func.isRequired,
   setActiveTab: PropTypes.func.isRequired,
-  fetchWorlds: PropTypes.func.isRequired,
   createWorld: PropTypes.func.isRequired,
-  updateWorld: PropTypes.func.isRequired,
   setShowModal: PropTypes.func.isRequired,
   setDrawerTitle: PropTypes.func.isRequired,
   worlds: PropTypes.arrayOf(PropTypes.shape({})),
