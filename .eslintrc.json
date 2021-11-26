@@ -43,6 +43,6 @@
         "class-methods-use-this": 0,
         "import/no-unresolved": [2, { "ignore": ["next/"] }],
         "react/jsx-props-no-spreading": ["error", {"exceptions": ["AuthComponent", "Component"]}],
-        "jsx-a11y/no-autofocus": 0,
+        "jsx-a11y/no-autofocus": 0
     }
 }
