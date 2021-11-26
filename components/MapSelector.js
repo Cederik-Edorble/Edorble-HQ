@@ -38,7 +38,7 @@ MapSelector.propTypes = {
     id: PropTypes.number,
     accessCode: PropTypes.number,
     enablePassword: PropTypes.bool,
-    map: PropTypes.number,
+    mapID: PropTypes.number,
   }).isRequired,
   updateWorld: PropTypes.func.isRequired,
 };
