@@ -8,7 +8,15 @@ const request = {
         name
         mapID
         defaultLogoURL
-        WorldParameters_ID
+        WorldMapInteractiveContentHolderContentMappings {
+          Content {
+            title
+            id
+            url
+            description
+          }
+          InteractiveContentHolderID
+        }
       }
     }
   `,
@@ -20,7 +28,6 @@ const request = {
           name
           mapID
           defaultLogoURL
-          WorldParameters_ID
         }
       }
     }
@@ -33,7 +40,6 @@ const request = {
           name
           mapID
           defaultLogoURL
-          WorldParameters_ID
         }
       }
     }

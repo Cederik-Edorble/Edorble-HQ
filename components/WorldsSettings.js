@@ -6,6 +6,7 @@ import {
 import MapSelector from './MapSelector';
 import Input from './Input';
 import styles from '../styles/WorldSetting.module.scss';
+import ContentSection from './ContentSection';
 
 const WorldsSettings = ({
   activeWorld,
@@ -19,6 +20,11 @@ const WorldsSettings = ({
   nameWorld,
   editName,
   editTitleHandler,
+  contentWorld,
+  addContent,
+  selectedContents,
+  contentHandler,
+  removeContent,
 }) => {
   const [enableEdit, setEnableEdit] = useState(false);
  
@@ -62,6 +68,20 @@ const WorldsSettings = ({
                   maps={maps}
                   activeWorld={activeWorld}
                   updateWorld={updateWorld}
+                />
+              </div>
+            </div>
+            <div className="grid col-span-4 mb-5 mt-5">
+              <h1 className="text-4xl text-edorble-300 font-bold w-full">
+                Content
+              </h1>
+              <div className="grid  col-span-8">
+                <ContentSection
+                  listContent={contentWorld}
+                  addContent={addContent} 
+                  selectedContents={selectedContents}
+                  contentHandler={contentHandler}
+                  removeContent={removeContent}
                 />
               </div>
             </div>
@@ -172,11 +192,21 @@ WorldsSettings.propTypes = {
   nameWorld: PropTypes.string,
   editName: PropTypes.bool,
   editTitleHandler: PropTypes.func,
+  contentWorld: PropTypes.arrayOf(PropTypes.shape({})),
+  addContent: PropTypes.func,
+  selectedContents: PropTypes.arrayOf(PropTypes.shape({})),
+  contentHandler: PropTypes.func,
+  removeContent: PropTypes.func,
 };
 WorldsSettings.defaultProps = {
   nameHandler: () => {},
+  addContent: () => {},
   nameWorld: '',
   editName: false,
   editTitleHandler: () => {},
+  contentWorld: [],
+  selectedContents: [],
+  contentHandler: () => {},
+  removeContent: () => {},
 };
 export default WorldsSettings;
