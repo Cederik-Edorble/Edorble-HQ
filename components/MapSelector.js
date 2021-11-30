@@ -22,7 +22,7 @@ const MapSelector = ({ maps, activeWorld, updateWorld }) => {
     <div className="grid col-span-12 md:col-span-8 gap-4 mt-5 md:mt-0">
       <select value={selectMap ?? ''} onChange={mapChangeHandler}>
         <option value="">Not Select</option>
-        {maps.map((map) => (
+        {maps && maps.map((map) => (
           <option value={map.id} key={map.id}>
             {map.name}
           </option>
@@ -32,7 +32,7 @@ const MapSelector = ({ maps, activeWorld, updateWorld }) => {
   );
 };
 MapSelector.propTypes = {
-  maps: PropTypes.arrayOf(PropTypes.object).isRequired,
+  maps: PropTypes.arrayOf(PropTypes.shape({})),
   activeWorld: PropTypes.shape({
     name: PropTypes.string,
     id: PropTypes.number,
@@ -42,4 +42,9 @@ MapSelector.propTypes = {
   }).isRequired,
   updateWorld: PropTypes.func.isRequired,
 };
+
+MapSelector.defaultProps = {
+  maps: []
+};
+
 export default MapSelector;
