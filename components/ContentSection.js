@@ -17,7 +17,7 @@ const ContentSection = ({
           contents={listContent}
           onChange={contentHandler}
           id={index}
-          selectedItem={selectedContents[index].id}
+          selectedItem={selectedContents[index].Content.id}
         />
         <Button color="removeContent" onClick={() => removeContent(index)}>
           {constants.removeContent}
@@ -34,7 +34,9 @@ ContentSection.propTypes = {
   contentHandler: PropTypes.func,
   removeContent: PropTypes.func,
   selectedContents: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.number
+    Content: PropTypes.shape({
+      id: PropTypes.number 
+    })
   })),
 };
 

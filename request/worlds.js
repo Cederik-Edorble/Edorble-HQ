@@ -4,16 +4,18 @@ const request = {
   GET_WORLDS: gql`
     query Worlds {
       Worlds {
-        id
         name
         mapID
+        id
         defaultLogoURL
+        ResourceID
         WorldMapInteractiveContentHolderContentMappings {
           Content {
+            description
             title
             id
             url
-            description
+            ResourceID
           }
           InteractiveContentHolderID
         }
@@ -28,6 +30,17 @@ const request = {
           name
           mapID
           defaultLogoURL
+          ResourceID
+          WorldMapInteractiveContentHolderContentMappings {
+            Content {
+              description
+              title
+              id
+              url
+              ResourceID
+            }
+            InteractiveContentHolderID
+          }
         }
       }
     }
@@ -40,6 +53,17 @@ const request = {
           name
           mapID
           defaultLogoURL
+          ResourceID
+          WorldMapInteractiveContentHolderContentMappings {
+            Content {
+              description
+              title
+              id
+              url
+              ResourceID
+            }
+            InteractiveContentHolderID
+          }
         }
       }
     }

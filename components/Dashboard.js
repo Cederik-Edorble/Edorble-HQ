@@ -13,7 +13,9 @@ import MapSettings from './MapSettings';
 import WorldsList from './WorldsList';
 import MapScreens from './MapScreens';
 import WorldsSettings from './WorldsSettings';
-import { findIndexItem, findIndexItemContent, removeItemArray } from '../Utils/helper';
+import {
+  findIndexItem, removeItemArray, checkId 
+} from '../Utils/helper';
 
 const Dashboard = (props) => {
   const {
@@ -26,7 +28,9 @@ const Dashboard = (props) => {
   } = props;
   const { GET_WORLDS, CREATE_WORLD, UPDATE_WORLD } = requestWorld;
   const { GET_MAPS, CREATE_MAP } = requestMap;
-  const { GET_CONTENTS, INSERT_CONTENT } = requestContentWorld;
+  const {
+    GET_CONTENTS, INSERT_CONTENT, DELETE_CONTENT, UPDATE_CONTENT 
+  } = requestContentWorld;
   const [showModal, setShowModal] = useState(null);
   const [drawerTitle, setDrawerTitle] = useState();
   const [worlds, setWorlds] = useState(null);
@@ -39,6 +43,7 @@ const Dashboard = (props) => {
 
   const [contentWorld, setContentWorld] = useState(false);
   const [selectedContents, setSelectedContent] = useState([]);
+  const [activeContent, setActiveContent] = useState(null);
 
   useEffect(() => {
     if (activeWorld) {
@@ -61,6 +66,7 @@ const Dashboard = (props) => {
     setWorlds(oldArray);
   };
 
+  // eslint-disable-next-line camelcase
   const updateWorldHandler = ({ update_Worlds }) => {
     setActiveWorld(update_Worlds?.returning[0]);
     changeArrayWorlds(update_Worlds.returning[0]);
@@ -87,6 +93,7 @@ const Dashboard = (props) => {
   
   const [fetchMaps] = useLazyQuery(GET_MAPS, {
     onCompleted: (data) => getMapHandler(data),
+    fetchPolicy: 'network-only',
     onError: () => {
       notification.error({
         message: 'Error',
@@ -97,6 +104,7 @@ const Dashboard = (props) => {
 
   const [fetchWorlds] = useLazyQuery(GET_WORLDS, {
     onCompleted: (data) => getWorldHandler(data),
+    fetchPolicy: 'network-only',
     onError: () => {
       notification.error({
         message: 'Error',
@@ -120,7 +128,7 @@ const Dashboard = (props) => {
     onError: () => {
       notification.error({
         message: 'Error',
-        description: 'Error on load Worlds',
+        description: 'Error on load contents',
       });
     },
   });
@@ -140,14 +148,6 @@ const Dashboard = (props) => {
       setMaps(array);
     },
   });
-
-  useEffect(() => {
-    const ownerId = +localStorage.getItem('userId');
-    setUserId(ownerId);
-    fetchWorlds();
-    fetchMaps();
-    fetchContent();
-  }, []);
   
   const editTitleHandler = () => {
     if (!editName) {
@@ -167,59 +167,96 @@ const Dashboard = (props) => {
     }
   };
 
-  const [insertContents] = useMutation(INSERT_CONTENT, {
+  const [insertContent] = useMutation(INSERT_CONTENT, {
     update(_, { data }) {
-      const body = data.insert_WorldMapInteractiveContentHolderContentMapping.returning[0].Content;
+      const body = data.insert_WorldMapInteractiveContentHolderContentMapping.returning[0];
       const prevArray = [...selectedContents];
       prevArray.push(body);
       setSelectedContent(prevArray);
+      notification.success({
+        message: 'Add Content Success',
+      });
     },
   });
 
-  const checkId = () => {
-    const arrayId = activeWorld.WorldMapInteractiveContentHolderContentMappings
-      .map((item) => {
-        return item.InteractiveContentHolderID;
-      });
-    const largest = Math.max(...arrayId); 
-    return largest <= 11 ? largest + 1 : 0;
+  // eslint-disable-next-line camelcase
+  const updateContentHandler = ({ update_WorldMapInteractiveContentHolderContentMapping }) => {
+    const updatedItem = update_WorldMapInteractiveContentHolderContentMapping.returning[0];
+    const prevArray = [...selectedContents];
+    prevArray[activeContent] = updatedItem;
+    setSelectedContent(prevArray);
+    notification.success({
+      message: 'Update Content Success',
+    });
   };
+
+  const [updateContent] = useMutation(UPDATE_CONTENT, {
+    onCompleted: (data) => updateContentHandler(data),
+    onError: () => {
+      notification.error({
+        message: 'Update Error',
+        description: 'Error on update World',
+      });
+    },
+  });
+
+  const contentHandler = (event, id) => {
+    setActiveContent(id);
+    updateContent({
+      variables: {
+        _eq: selectedContents[id].InteractiveContentHolderID, // InteractiveContentHolderID
+        _eq1: activeWorld.id, // WorldID
+        ContentID: event.target.value // setContent
+      }
+    });
+  };
+
+  const deleteContentHandler = () => {
+    notification.success({
+      message: 'Delete Content',
+    });
+  };
+
+  const [deleteContent] = useMutation(DELETE_CONTENT, {
+    onCompleted: () => deleteContentHandler(),
+    onError: () => {
+      notification.error({
+        message: 'Update Error',
+        description: 'Error on update World',
+      });
+    },
+  });
   
   const addItemContent = () => {
-    insertContents({
+    const id = checkId(selectedContents);
+    insertContent({
       variables: {
         WorldID: activeWorld.id,
         MapID: activeWorld.mapID,
-        InteractiveContentHolderID: checkId(),
+        InteractiveContentHolderID: id,
         ContentID: contentWorld[0].id,
       }
     });
   };
 
   const removeContent = (id) => {
+    deleteContent({
+      variables: {
+        _eq: activeWorld.id,
+        _eq1: selectedContents[id].InteractiveContentHolderID
+      }
+    });
     const newArray = removeItemArray(selectedContents, id, 1);
     setSelectedContent(newArray);
   };
-
-  const contentHandler = (event, id) => {
-    const { value } = event.target;
-    const array = [...selectedContents];
-    if (value !== `${id}`) {
-      const indexItem = findIndexItemContent(contentWorld, 'id', value);
-      array[id] = contentWorld[indexItem];
-    } else {
-      array[id] = {
-        Content: {
-          contentTypeID: 0,
-          description: '',
-          id: 0,
-          title: '',
-          url: ''
-        }
-      };
-    }
-    setSelectedContent(array);
-  };
+ 
+  useEffect(() => {
+    const ownerId = +localStorage.getItem('userId');
+    setUserId(ownerId);
+    fetchWorlds();
+    fetchMaps();
+    fetchContent();
+  }, [activeWorld, selectedContents]);
 
   return (
     <>
@@ -268,7 +305,16 @@ const Dashboard = (props) => {
 
       {activeWorld && activeTab === 'content' && (
         <div className="grid col-span-12">
-          <ContentScreen activeWorld={activeWorld} />
+          <ContentScreen
+            activeWorld={activeWorld}
+            contentWorld={contentWorld}
+            addContent={addItemContent}
+            selectedContents={selectedContents}
+            contentHandler={contentHandler}
+            removeContent={removeContent}
+            maps={maps}
+            updateWorld={updateWorld}
+          />
         </div>
       )}
 

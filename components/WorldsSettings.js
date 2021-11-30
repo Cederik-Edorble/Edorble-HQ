@@ -3,15 +3,11 @@ import PropTypes from 'prop-types';
 import {
   Button, Col, Row, Tooltip
 } from 'antd';
-import MapSelector from './MapSelector';
 import Input from './Input';
 import styles from '../styles/WorldSetting.module.scss';
-import ContentSection from './ContentSection';
 
 const WorldsSettings = ({
   activeWorld,
-  updateWorld,
-  maps,
   password,
   retypePassword,
   setPassword,
@@ -20,11 +16,6 @@ const WorldsSettings = ({
   nameWorld,
   editName,
   editTitleHandler,
-  contentWorld,
-  addContent,
-  selectedContents,
-  contentHandler,
-  removeContent,
 }) => {
   const [enableEdit, setEnableEdit] = useState(false);
  
@@ -42,7 +33,7 @@ const WorldsSettings = ({
         <div className="grid col-span-12 md:col-span-8 gap-4 mt-10 md:mt-0">
           <div className={styles.container}>
             <div className={styles.containerTitle}>
-              <h1 className="text-4xl text-edorble-300 font-bold w-full">
+              <h1 className="text-4xl text-edorble-300 font-bold">
                 {!editName ? activeWorld.name : (
                   <Input
                     onChange={nameHandler}
@@ -51,39 +42,13 @@ const WorldsSettings = ({
                   />
                 )}
               </h1>
-              <h1 className="text-4xl text-edorble-300 font-bold w-full">
+              <h1 className="text-4xl text-edorble-300 font-bold">
                 <i
                   className="fa fa-edit float-right text-2xl cursor-pointer mt-1"
                   role="presentation"
                   onClick={editTitleHandler}
                 />
               </h1>
-            </div>
-            <div className="grid col-span-4 mb-5 mt-5">
-              <h1 className="text-4xl text-edorble-300 font-bold w-full">
-                Map
-              </h1>
-              <div className="grid  col-span-8">
-                <MapSelector
-                  maps={maps}
-                  activeWorld={activeWorld}
-                  updateWorld={updateWorld}
-                />
-              </div>
-            </div>
-            <div className="grid col-span-4 mb-5 mt-5">
-              <h1 className="text-4xl text-edorble-300 font-bold w-full">
-                Content
-              </h1>
-              <div className="grid  col-span-8">
-                <ContentSection
-                  listContent={contentWorld}
-                  addContent={addContent} 
-                  selectedContents={selectedContents}
-                  contentHandler={contentHandler}
-                  removeContent={removeContent}
-                />
-              </div>
             </div>
           </div>
           <div className="grid grid-cols-12 gap-2 p-5 border border-edorble-100 rounded">
@@ -182,8 +147,6 @@ WorldsSettings.propTypes = {
     accessCode: PropTypes.number,
     enablePassword: PropTypes.bool,
   }).isRequired,
-  updateWorld: PropTypes.func.isRequired,
-  maps: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   password: PropTypes.string.isRequired,
   retypePassword: PropTypes.string.isRequired,
   setPassword: PropTypes.func.isRequired,
@@ -192,21 +155,11 @@ WorldsSettings.propTypes = {
   nameWorld: PropTypes.string,
   editName: PropTypes.bool,
   editTitleHandler: PropTypes.func,
-  contentWorld: PropTypes.arrayOf(PropTypes.shape({})),
-  addContent: PropTypes.func,
-  selectedContents: PropTypes.arrayOf(PropTypes.shape({})),
-  contentHandler: PropTypes.func,
-  removeContent: PropTypes.func,
 };
 WorldsSettings.defaultProps = {
   nameHandler: () => {},
-  addContent: () => {},
   nameWorld: '',
   editName: false,
   editTitleHandler: () => {},
-  contentWorld: [],
-  selectedContents: [],
-  contentHandler: () => {},
-  removeContent: () => {},
 };
 export default WorldsSettings;
