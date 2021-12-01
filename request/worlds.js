@@ -18,6 +18,10 @@ const request = {
             ResourceID
           }
           InteractiveContentHolderID
+          InteractiveContentHolder {
+            id
+            RegionID
+          }
         }
       }
     }
@@ -40,6 +44,10 @@ const request = {
               ResourceID
             }
             InteractiveContentHolderID
+            InteractiveContentHolder {
+              id
+              RegionID
+            }
           }
         }
       }
@@ -63,6 +71,10 @@ const request = {
               ResourceID
             }
             InteractiveContentHolderID
+            InteractiveContentHolder {
+              id
+              RegionID
+            }
           }
         }
       }

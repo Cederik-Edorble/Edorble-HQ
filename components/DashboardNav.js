@@ -55,10 +55,11 @@ const DashboardNav = ({
 
           <div
             role="presentation"
-            onClick={() => setActiveTab('content')}
-            className={`${activeTab === 'content' ? 'text-white' : 'text-edorble-100'} font-bold cursor-pointer`}
+            onClick={() => setActiveTab('World Content Configuration')}
+            className={`${activeTab === 'World Content Configuration'
+              ? 'text-white' : 'text-edorble-100'} font-bold cursor-pointer`}
           >
-            Content
+            World Content Configuration
           </div>
         </div>
       )}

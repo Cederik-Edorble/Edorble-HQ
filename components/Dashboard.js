@@ -303,7 +303,7 @@ const Dashboard = (props) => {
         />
       )}
 
-      {activeWorld && activeTab === 'content' && (
+      {activeWorld && activeTab === 'World Content Configuration' && (
         <div className="grid col-span-12">
           <ContentScreen
             activeWorld={activeWorld}
