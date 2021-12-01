@@ -33,6 +33,11 @@ const request = {
             url
           }
           InteractiveContentHolderID
+          InteractiveContentHolder {
+              id
+              ResourceID
+              RegionID
+            }
         }
       }
     }
@@ -68,6 +73,11 @@ const request = {
             ResourceID
           }
           InteractiveContentHolderID
+          InteractiveContentHolder {
+              id
+              ResourceID
+              RegionID
+            }
         }
       }
     }

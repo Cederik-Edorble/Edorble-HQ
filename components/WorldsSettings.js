@@ -4,6 +4,7 @@ import {
   Button, Col, Row, Tooltip
 } from 'antd';
 import Input from './Input';
+import MapSelector from './MapSelector';
 import styles from '../styles/WorldSetting.module.scss';
 
 const WorldsSettings = ({
@@ -16,6 +17,8 @@ const WorldsSettings = ({
   nameWorld,
   editName,
   editTitleHandler,
+  maps,
+  updateWorld,
 }) => {
   const [enableEdit, setEnableEdit] = useState(false);
  
@@ -49,6 +52,19 @@ const WorldsSettings = ({
                   onClick={editTitleHandler}
                 />
               </h1>
+            </div>
+
+            <div className="grid col-span-4 mb-5 mt-5">
+              <h1 className="text-4xl text-edorble-300 font-bold w-full">
+                Map
+              </h1>
+              <div className="grid  col-span-8">
+                <MapSelector
+                  maps={maps}
+                  activeWorld={activeWorld}
+                  updateWorld={updateWorld}
+                />
+              </div>
             </div>
           </div>
           <div className="grid grid-cols-12 gap-2 p-5 border border-edorble-100 rounded">
@@ -155,6 +171,8 @@ WorldsSettings.propTypes = {
   nameWorld: PropTypes.string,
   editName: PropTypes.bool,
   editTitleHandler: PropTypes.func,
+  maps: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  updateWorld: PropTypes.func.isRequired, 
 };
 WorldsSettings.defaultProps = {
   nameHandler: () => {},
