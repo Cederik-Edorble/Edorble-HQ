@@ -10,17 +10,98 @@ const request = {
         macLink
         windowsLink
         version
+        ResourceID
+        WorldMapInteractiveContentHolderContentMappings {
+          Content {
+            url
+            title
+            id
+            description
+          }
+          InteractiveContentHolder {
+            id
+            RegionID
+          }
+        }
       }
     }
   `,
   CREATE_MAP: gql`
-    mutation insert_Maps($object: [Maps_insert_input!]!) {
-      insert_Maps(objects: $object) {
+    mutation createMap(
+      $ResourceID: bigint,
+      $fileName: String,
+      $macLink: String,
+      $name: String,
+      $version: String,
+      $windowsLink: String) {
+      insert_Maps(objects: {
+        fileName: $fileName,
+        macLink: $macLink,
+        name: $name,
+        version: $version,
+        windowsLink: $windowsLink,
+        ResourceID: $ResourceID
+      }) {
         returning {
           name
           id
           fileName
           macLink
+          windowsLink
+          version
+          ResourceID
+          WorldMapInteractiveContentHolderContentMappings {
+            Content {
+              url
+              title
+              id
+              description
+            }
+            InteractiveContentHolder {
+              id
+              RegionID
+            }
+          }
+        }
+      }
+    }
+  `,
+  UPDATE_MAP: gql`
+    mutation update_Maps(
+      $_eq: Int,
+      $ResourceID: bigint,
+      $fileName: String,
+      $macLink: String,
+      $name: String,
+      $version: String,
+      $windowsLink: String) {
+    update_Maps(
+      where: {
+        id: {_eq: $_eq}},
+        _set: {
+          name: $name,
+          macLink: $macLink,
+          version: $version,
+          windowsLink: $windowsLink,
+          fileName: $fileName,
+          ResourceID: $ResourceID}) {
+      returning {
+        fileName
+        name
+        version
+        windowsLink
+        macLink
+        ResourceID
+        id
+      }
+    }
+  }
+  `,
+  DELETE_MAP: gql`
+    mutation deleteMap($_eq: Int) {
+      delete_Maps(where: {id: {_eq: $_eq}}) {
+        returning {
+          id
         }
       }
     }

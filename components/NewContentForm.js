@@ -5,7 +5,7 @@ import {
 import PropTypes from 'prop-types';
 
 const NewContentForm = ({
-  content, selectedScreen, createContent, deleteContent, activeWorld
+  content, createContent, deleteContent, contentType, resources,
 }) => {
   const [title, setTitle] = useState(content?.title ?? '');
   const [url, setUrl] = useState(content?.url ?? '');
@@ -16,15 +16,7 @@ const NewContentForm = ({
     e.preventDefault();
     createContent({
       variables: {
-        contentInput: {
-          screen: +selectedScreen.id,
-          id: content?.id ?? null,
-          world: activeWorld?.id ?? null,
-          title,
-          url,
-          description,
-          type
-        },
+        
       },
     });
   };
@@ -162,9 +154,13 @@ NewContentForm.propTypes = {
     region: PropTypes.number
   }).isRequired,
   createContent: PropTypes.func.isRequired,
-  deleteContent: PropTypes.func.isRequired
+  deleteContent: PropTypes.func.isRequired,
+  contentType: PropTypes.arrayOf(PropTypes.shape({})),
+  resources: PropTypes.arrayOf(PropTypes.shape({})),
 };
 NewContentForm.defaultProps = {
-  content: null
+  content: null,
+  contentType: [],
+  resources: [],
 };
 export default NewContentForm;

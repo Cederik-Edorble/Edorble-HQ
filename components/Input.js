@@ -2,10 +2,10 @@ import PropTypes from 'prop-types';
 import styles from '../styles/Input.module.scss';
 
 const Input = ({
-  onChange, value, placeholder, className, id, styleType
+  onChange, value, placeholder, className, id, styleType, type
 }) => (
   <input
-    type="text"
+    type={type}
     onChange={onChange}
     value={value}
     required
@@ -17,11 +17,12 @@ const Input = ({
 
 Input.propTypes = {
   onChange: PropTypes.func,
-  value: PropTypes.string,
+  value: PropTypes.string || PropTypes.number,
   placeholder: PropTypes.string,
   className: PropTypes.string,
   id: PropTypes.string,
   styleType: PropTypes.string,
+  type: PropTypes.string
 };
 
 Input.defaultProps = {
@@ -31,6 +32,7 @@ Input.defaultProps = {
   className: '',
   id: '',
   styleType: '',
+  type: 'text'
 };
 
 export default Input;
