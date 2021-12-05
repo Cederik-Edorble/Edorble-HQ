@@ -4,11 +4,14 @@ import TextField from './UI/TextField/TextField';
 import Button from './UI/Button/Button';
 
 const ContentItem = ({
-  name, type, id, styleTypeText, labelBtn, styleBtn, removeItemContent
+  name, type, id, styleTypeText, labelBtn, styleBtn, removeItemContent, labelBtnEdit, updateContent
 }) => (
   <div className={styles.container} id={id}>
     <TextField text={name} styleType={styleTypeText} />
     <TextField text={type} styleType={styleTypeText} />
+    <Button color={styleBtn} onClick={() => updateContent(id)}>
+      {labelBtnEdit}
+    </Button>
     <Button color={styleBtn} onClick={() => removeItemContent(id)}>
       {labelBtn}
     </Button>
@@ -20,7 +23,9 @@ ContentItem.defaultProps = {
   styleTypeText: '',
   labelBtn: '',
   styleBtn: '',
+  labelBtnEdit: '',
   removeItemContent: () => {},
+  updateContent: () => {},
 };
 
 ContentItem.propTypes = {
@@ -31,6 +36,8 @@ ContentItem.propTypes = {
   labelBtn: PropTypes.string,
   styleBtn: PropTypes.string,
   removeItemContent: PropTypes.func,
+  labelBtnEdit: PropTypes.string,
+  updateContent: PropTypes.func,
 };
 
 export default ContentItem;

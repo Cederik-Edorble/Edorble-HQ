@@ -3,7 +3,7 @@ import styles from '../styles/ContentList.module.scss';
 import ContentItem from './ContentItem';
 import strings from '../constants/strings';
 
-const ContentList = ({ list, removeItemContent }) => (
+const ContentList = ({ list, removeItemContent, updateContent }) => (
   <div className={styles.container}>
     {list && list.map((item, index) => (
       <ContentItem
@@ -12,9 +12,11 @@ const ContentList = ({ list, removeItemContent }) => (
         type={item.ContentType}
         styleTypeText="contentItem"
         labelBtn={strings.removeContent}
+        labelBtnEdit={strings.labelBtnEdit}
         styleBtn="removeContent"
         id={item.id}
         removeItemContent={removeItemContent}
+        updateContent={updateContent}
       />
     ))}
   
@@ -24,11 +26,13 @@ const ContentList = ({ list, removeItemContent }) => (
 ContentList.defaultProps = {
   list: [],
   removeItemContent: () => {},
+  updateContent: () => {},
 };
 
 ContentList.propTypes = {
   list: PropTypes.arrayOf(PropTypes.shape({})),
   removeItemContent: PropTypes.func,
+  updateContent: PropTypes.func,
 };
 
 export default ContentList;

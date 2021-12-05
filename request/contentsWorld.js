@@ -53,6 +53,34 @@ const request = {
         }
       }
     }
+  `,
+  UPDATE_CONTENT: gql`
+    mutation create(
+      $_eq: Int,
+      $ContentType: ContentTypes_enum,
+      $ResourceID: bigint,
+      $description: String,
+      $title: String,
+      $url: String) {
+      update_Contents(
+        where: {
+          id: {_eq: $_eq}},
+           _set: {
+            url: $url,
+            title: $title, 
+            description: $description, 
+            ResourceID: $ResourceID, 
+            ContentType: $ContentType}) {
+        returning {
+          ContentType
+          ResourceID
+          description
+          id
+          title
+          url
+        }
+      }
+    }
   `
 };
 

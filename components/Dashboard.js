@@ -31,7 +31,7 @@ const Dashboard = (props) => {
     GET_MAPS, CREATE_MAP, DELETE_MAP, UPDATE_MAP 
   } = requestMap;
   const {
-    GET_CONTENTS, CREATE_CONTENT, GET_CONTENT_TYPE, DELETE_CONTENT 
+    GET_CONTENTS, CREATE_CONTENT, GET_CONTENT_TYPE, DELETE_CONTENT, UPDATE_CONTENT
   } = requestContentWorld;
   const { GET_RESOURCES } = requestResources;
   const [showModal, setShowModal] = useState(null);
@@ -93,6 +93,9 @@ const Dashboard = (props) => {
     const indexItem = findIndexItem(array, 'id', delete_Contents.returning[0].id);
     const newArray = removeItemArray(array, indexItem, 1);
     setContent(newArray);
+    notification.success({
+      message: 'Delete content Success',
+    });
   };
 
   const getWorldHandler = ({ Worlds }) => setWorlds(Worlds);
@@ -229,16 +232,12 @@ const Dashboard = (props) => {
     },
   });
 
-  const createContentHandler = () => {
-
-  };
-
   const [createContent] = useMutation(CREATE_CONTENT, {
     update(_, { data }) {
-      // const array = [...maps];
-      // array.push(data?.insert_Contents?.returning[0]);
-      // setMaps(array);
-      // setShowModal(null);
+      const array = [...content];
+      array.push(data?.insert_Contents?.returning[0]);
+      setContent(array);
+      setShowModal(null);
       notification.success({
         message: 'Create Content Success',
       });
@@ -251,12 +250,31 @@ const Dashboard = (props) => {
     },
   });
 
+  const [updateContentItem] = useMutation(UPDATE_CONTENT, {
+    update(_, { data }) {
+      const array = [...content];
+      const indexItem = findIndexItem(array, 'id', data?.update_Contents?.returning[0].id);
+      array[indexItem] = data?.update_Contents?.returning[0];
+      setContent(array);
+      setShowModal(null);
+      notification.success({
+        message: 'Update Content Success',
+      });
+    },
+    onError: () => {
+      notification.error({
+        message: 'Error',
+        description: 'Error on update content',
+      });
+    },
+  });
+
   const [deleteContent] = useMutation(DELETE_CONTENT, {
     onCompleted: (data) => deleteContentHandler(data),
     onError: () => {
       notification.error({
         message: 'Error',
-        description: 'Error on delete map',
+        description: 'Error on delete content',
       });
     },
   });
@@ -375,6 +393,7 @@ const Dashboard = (props) => {
         contentType={contentType}
         resources={resources}
         deleteContent={deleteContent}
+        updateContentItem={updateContentItem}
       />
       )}
     </>

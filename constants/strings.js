@@ -4,6 +4,7 @@ const strings = {
   selected: 'selected',
   removeContent: 'remove',
   saveChanges: 'save changes',
+  labelBtnEdit: 'edit'
 
 };
 

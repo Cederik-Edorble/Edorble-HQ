@@ -4,6 +4,7 @@ import MenuContent from './MenuContent';
 import DrawerTitle from './DrawerTitle';
 import NewContentForm from './NewContentForm';
 import ContentList from './ContentList';
+import { filterArray } from '../Utils/helper';
 
 const Contents = ({
   content,
@@ -12,7 +13,8 @@ const Contents = ({
   setDrawerTitle, 
   contentType,
   resources, 
-  deleteContent
+  deleteContent,
+  updateContentItem
 }) => {
   const createItem = () => {
     setDrawerTitle(
@@ -35,11 +37,34 @@ const Contents = ({
     });
   };
 
+  const updateContent = (id) => {
+    let item = {};
+    if (content) {
+      item = filterArray(content, 'id', id);
+    }
+
+    setDrawerTitle(
+      <DrawerTitle text="Update content" />
+    );
+    setShowModal(
+      <NewContentForm 
+        createContent={createContent}
+        contentType={contentType} 
+        resources={resources}
+        content={item[0]}
+        updateContentItem={updateContentItem}
+      />
+    );
+  };
+  
   return (
     <div className={styles.container}>
-      {console.log(content)}
       <MenuContent createItem={createItem} />
-      <ContentList list={content} removeItemContent={removeItemContent} />
+      <ContentList
+        list={content}
+        removeItemContent={removeItemContent}
+        updateContent={updateContent}
+      />
     </div>
   ); 
 };
@@ -52,6 +77,7 @@ Contents.propTypes = {
   setShowModal: PropTypes.func,
   setDrawerTitle: PropTypes.func,
   deleteContent: PropTypes.func,
+  updateContentItem: PropTypes.func,
 };
 Contents.defaultProps = {
   content: [],
@@ -61,6 +87,7 @@ Contents.defaultProps = {
   setShowModal: () => {},
   setDrawerTitle: () => {},
   deleteContent: () => {},
+  updateContentItem: () => {},
 };
 
 export default Contents;
