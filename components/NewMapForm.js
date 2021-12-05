@@ -5,33 +5,51 @@ import Input from './Input';
 import styles from '../styles/NewMapForm.module.scss';
 
 const NewMapForm = ({
-  createMap, activeMap, deleteMap
+  createMap, activeMap, deleteMap, updateMap, setIdMapActive
 }) => {
   const [fields, setFields] = useState({
     name: activeMap.name ?? '',
-    fileName: '',
-    windowsLink: '',
-    macLink: '',
-    version: '',
+    fileName: activeMap.fileName ?? '',
+    windowsLink: activeMap.windowsLink ?? '',
+    macLink: activeMap.macLink ?? '',
+    version: activeMap.version ?? '',
+    ResourceID: activeMap.ResourceID ?? 1,
   });
 
   const create = async (ev) => {
     ev.preventDefault();
     createMap({
       variables: {
-        object: fields
+        ResourceID: fields.ResourceID,
+        fileName: fields.fileName,
+        macLink: fields.macLink,
+        name: fields.name,
+        version: fields.version,
+        windowsLink: fields.windowsLink
       }
     });
   };
 
   const update = async (ev) => {
     ev.preventDefault();
+    updateMap({
+      variables: {
+        _eq: activeMap.id,
+        ResourceID: fields.ResourceID,
+        fileName: fields.fileName,
+        macLink: fields.macLink,
+        name: fields.name,
+        version: fields.version,
+        windowsLink: fields.windowsLink,
+      }
+    });
   };
   
   const remove = async (id) => {
+    setIdMapActive(id);
     deleteMap({
       variables: {
-        id
+        _eq: id
       },
     });
   };
@@ -58,6 +76,7 @@ const NewMapForm = ({
                   placeholder={item}
                   value={fields[item]}
                   id={item}
+                  type={item === 'ResourceID' ? 'number' : 'text'}
                 />
               </div>
             ))}
@@ -103,16 +122,21 @@ NewMapForm.propTypes = {
     fileName: PropTypes.string,
     windowsLink: PropTypes.string,
     macLink: PropTypes.string,
-    version: PropTypes.string
+    version: PropTypes.string,
+    ResourceID: PropTypes.number
   }),
   createMap: PropTypes.func,
   deleteMap: PropTypes.func,
+  updateMap: PropTypes.func,
+  setIdMapActive: PropTypes.func,
 };
 
 NewMapForm.defaultProps = {
   activeMap: {},
   deleteMap: () => {},
   createMap: () => {},
+  updateMap: () => {},
+  setIdMapActive: () => {},
 };
 
 export default NewMapForm;

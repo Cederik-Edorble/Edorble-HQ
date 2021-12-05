@@ -11,7 +11,7 @@ const DashboardNav = ({
 }) => {
   return (
     <>
-      {(activeTab === 'worlds' || activeTab === 'maps') && (
+      {(activeTab === 'worlds' || activeTab === 'maps' || activeTab === 'contents') && (
         <div className="flex justify-around bg-edorble-400 p-2">
           <div
             role="presentation"
@@ -30,6 +30,16 @@ const DashboardNav = ({
             onClick={() => setActiveTab('maps')}
           >
             Maps
+          </div>
+
+          <div
+            role="presentation"
+            className={`${
+              activeTab === 'contents' ? 'text-white' : 'text-edorble-100'
+            } font-bold cursor-pointer`}
+            onClick={() => setActiveTab('contents')}
+          >
+            Contents
           </div>
         </div>
       )}
@@ -85,13 +95,15 @@ const DashboardNav = ({
 
           <div
             role="presentation"
-            onClick={() => setActiveTab('screens')}
-            className={`${activeTab === 'screens' ? 'text-white' : 'text-edorble-100'} font-bold cursor-pointer`}
+            onClick={() => setActiveTab('Interactive Content Holder')}
+            className={`${activeTab === 'Interactive Content Holder' 
+              ? 'text-white' : 'text-edorble-100'} font-bold cursor-pointer`}
           >
-            Screens
+            Interactive Content Holder
           </div>
         </div>
       )}
+
     </>
   );
 };

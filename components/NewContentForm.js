@@ -5,36 +5,39 @@ import {
 import PropTypes from 'prop-types';
 
 const NewContentForm = ({
-  content, selectedScreen, createContent, deleteContent, activeWorld
+  content, createContent, contentType, resources, updateContentItem,
 }) => {
-  const [title, setTitle] = useState(content?.title ?? '');
   const [url, setUrl] = useState(content?.url ?? '');
+  const [title, setTitle] = useState(content?.title ?? '');
   const [description, setDescription] = useState(content?.description ?? '');
-  const [type, setType] = useState(content?.type ?? '');
+  const [type, setType] = useState(content?.ContentType ?? 'Image');
 
   const submitForm = (e) => {
     e.preventDefault();
-    createContent({
-      variables: {
-        contentInput: {
-          screen: +selectedScreen.id,
-          id: content?.id ?? null,
-          world: activeWorld?.id ?? null,
+    if (content && content?.id) {
+      updateContentItem({
+        variables: {
+          _eq: content?.id,
+          ContentType: type,
+          ResourceID: content?.ResourceID,
+          description,
+          title,
+          url
+        }
+      });
+    } else {
+      createContent({
+        variables: {
+          description,
           title,
           url,
-          description,
-          type
+          ContentType: type,
+          ResourceID: resources[37].id,
         },
-      },
-    });
+      });
+    }
   };
-  const deleteHandler = (id) => {
-    deleteContent({
-      variables: {
-        id
-      }
-    });
-  };
+ 
   return (
     <div className="grid grid-cols-12">
       <div className="col-span-12">
@@ -104,8 +107,14 @@ const NewContentForm = ({
                     setType(ev.currentTarget.value);
                   }}
                 >
-                  <option value="image">Image</option>
-                  <option value="video">Video</option>
+                  {contentType && contentType.map((item, index) => (
+                    <option
+                      value={item.ContentType}
+                      key={[item.ContentType, index].join('_')}
+                    >
+                      {item.ContentType}
+                    </option>
+                  ))}
                 </select>
               </div>
 
@@ -124,20 +133,6 @@ const NewContentForm = ({
                 Submit
               </Button>
             </Col>
-            { content?.id 
-              && (
-              <Col span={24} className="mt-5">
-                <Button
-                  className="border-0
-                      ant-btn-danger
-                      w-full rounded
-                      font-bold"
-                  onClick={() => deleteHandler(content.id)}
-                >
-                  Delete
-                </Button>
-              </Col>
-              )}
           </Row>
         </form>
       </div>
@@ -149,22 +144,26 @@ NewContentForm.propTypes = {
     title: PropTypes.string,
     description: PropTypes.string,
     url: PropTypes.string,
-    type: PropTypes.string,
+    ContentType: PropTypes.string,
     id: PropTypes.number,
-    world: PropTypes.number,
+    ResourceID: PropTypes.number,
   }),
   activeWorld: PropTypes.shape({
     id: PropTypes.number
-  }).isRequired,
-  selectedScreen: PropTypes.shape({
-    id: PropTypes.number,
-    name: PropTypes.string,
-    region: PropTypes.number
-  }).isRequired,
-  createContent: PropTypes.func.isRequired,
-  deleteContent: PropTypes.func.isRequired
+  }),
+  createContent: PropTypes.func,
+  contentType: PropTypes.arrayOf(PropTypes.shape({})),
+  resources: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.number
+  })),
+  updateContentItem: PropTypes.func,
 };
 NewContentForm.defaultProps = {
-  content: null
+  content: null,
+  contentType: [],
+  resources: [],
+  activeWorld: {},
+  createContent: () => {},
+  updateContentItem: () => {},
 };
 export default NewContentForm;

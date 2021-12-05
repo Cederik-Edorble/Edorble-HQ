@@ -8,21 +8,6 @@ const request = {
         mapID
         id
         defaultLogoURL
-        ResourceID
-        WorldMapInteractiveContentHolderContentMappings {
-          Content {
-            description
-            title
-            id
-            url
-            ResourceID
-          }
-          InteractiveContentHolderID
-          InteractiveContentHolder {
-            id
-            RegionID
-          }
-        }
       }
     }
   `,
@@ -34,21 +19,6 @@ const request = {
           name
           mapID
           defaultLogoURL
-          ResourceID
-          WorldMapInteractiveContentHolderContentMappings {
-            Content {
-              description
-              title
-              id
-              url
-              ResourceID
-            }
-            InteractiveContentHolderID
-            InteractiveContentHolder {
-              id
-              RegionID
-            }
-          }
         }
       }
     }
@@ -61,21 +31,6 @@ const request = {
           name
           mapID
           defaultLogoURL
-          ResourceID
-          WorldMapInteractiveContentHolderContentMappings {
-            Content {
-              description
-              title
-              id
-              url
-              ResourceID
-            }
-            InteractiveContentHolderID
-            InteractiveContentHolder {
-              id
-              RegionID
-            }
-          }
         }
       }
     }

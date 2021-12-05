@@ -4,18 +4,18 @@ import {
 } from 'antd';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import PropTypes from 'prop-types';
-import ContentScreen from './ContentScreen';
+import WorldContentConfiguration from './WorldContentConfiguration';
 import requestWorld from '../request/worlds';
 import requestMap from '../request/map';
 import requestContentWorld from '../request/contentsWorld';
+import requestResources from '../request/resourses';
 import MapList from './MapList';
 import MapSettings from './MapSettings';
 import WorldsList from './WorldsList';
 import MapScreens from './MapScreens';
 import WorldsSettings from './WorldsSettings';
-import {
-  findIndexItem, removeItemArray, checkId 
-} from '../Utils/helper';
+import { findIndexItem, removeItemArray } from '../Utils/helper';
+import Contents from './Contents';
 
 const Dashboard = (props) => {
   const {
@@ -27,10 +27,13 @@ const Dashboard = (props) => {
     activeMap,
   } = props;
   const { GET_WORLDS, CREATE_WORLD, UPDATE_WORLD } = requestWorld;
-  const { GET_MAPS, CREATE_MAP } = requestMap;
   const {
-    GET_CONTENTS, INSERT_CONTENT, DELETE_CONTENT, UPDATE_CONTENT 
+    GET_MAPS, CREATE_MAP, DELETE_MAP, UPDATE_MAP 
+  } = requestMap;
+  const {
+    GET_CONTENTS, CREATE_CONTENT, GET_CONTENT_TYPE, DELETE_CONTENT, UPDATE_CONTENT
   } = requestContentWorld;
+  const { GET_RESOURCES } = requestResources;
   const [showModal, setShowModal] = useState(null);
   const [drawerTitle, setDrawerTitle] = useState();
   const [worlds, setWorlds] = useState(null);
@@ -41,15 +44,11 @@ const Dashboard = (props) => {
   const [nameWorld, setNameWorld] = useState(activeWorld?.name ? activeWorld?.name : '');
   const [editName, setEditName] = useState(false);
 
-  const [contentWorld, setContentWorld] = useState(false);
-  const [selectedContents, setSelectedContent] = useState([]);
-  const [activeContent, setActiveContent] = useState(null);
+  const [content, setContent] = useState(false);
+  const [contentType, setContentType] = useState(false);
+  const [resources, setResources] = useState(false);
 
-  useEffect(() => {
-    if (activeWorld) {
-      setSelectedContent(activeWorld.WorldMapInteractiveContentHolderContentMappings);
-    }
-  }, [activeWorld]);
+  const [idMapActive, setIdMapActive] = useState(null);
 
   useEffect(() => {
     setNameWorld(activeWorld?.name);
@@ -78,17 +77,40 @@ const Dashboard = (props) => {
     });
   };
 
-  // don`t remove, it need for update maps
-  const updateMapHandler = ({ updateMap }) => {
-    setActiveMap(updateMap[0]);
-    setMaps(updateMap);
+  const deleteMapHandler = () => {
+    const array = [...maps];
+    const indexItem = findIndexItem(array, 'id', idMapActive);
+    const newArray = removeItemArray(array, indexItem, 1);
+    setMaps(newArray);
+    setActiveTab('maps');
     setShowModal(null);
+    setActiveMap(null);
+  };
+
+  // eslint-disable-next-line camelcase
+  const deleteContentHandler = ({ delete_Contents }) => {
+    const array = [...content];
+    const indexItem = findIndexItem(array, 'id', delete_Contents.returning[0].id);
+    const newArray = removeItemArray(array, indexItem, 1);
+    setContent(newArray);
+    notification.success({
+      message: 'Delete content Success',
+    });
   };
 
   const getWorldHandler = ({ Worlds }) => setWorlds(Worlds);
   const getMapHandler = ({ Maps }) => setMaps(Maps);
-  const getContentHandler = ({ Contents }) => {
-    setContentWorld(Contents); 
+
+  const getContentHandler = ({ Contents: contents }) => {
+    setContent(contents); 
+  };
+  
+  const getContentTypeHandler = ({ ContentTypes }) => {
+    setContentType(ContentTypes); 
+  };
+
+  const getResourcesHandler = ({ Resources }) => {
+    setResources(Resources); 
   };
   
   const [fetchMaps] = useLazyQuery(GET_MAPS, {
@@ -123,6 +145,63 @@ const Dashboard = (props) => {
     },
   });
 
+  const [createWorld] = useMutation(CREATE_WORLD, {
+    update(_, { data }) {
+      const array = [...worlds];
+      array.push(data?.insert_Worlds?.returning[0]);
+      setWorlds(array);
+      setShowModal(null);
+      notification.success({
+        message: 'Update World Success',
+      });
+    },
+    onError: () => {
+      notification.error({
+        message: 'Error',
+        description: 'Error on update world',
+      });
+    }
+  });
+
+  const [createMap] = useMutation(CREATE_MAP, {
+    update(_, { data }) {
+      const array = [...maps];
+      array.push(data?.insert_Maps?.returning[0]);
+      setMaps(array);
+      setShowModal(null);
+    },
+  });
+
+  const [updateMap] = useMutation(UPDATE_MAP, {
+    update(_, { data }) {
+      const array = [...maps];
+      const indexItem = findIndexItem(array, 'id', idMapActive);
+      array[indexItem] = data?.update_Maps?.returning[0];
+      setMaps(array);
+      setActiveMap(data?.update_Maps?.returning[0]);
+      setShowModal(null);
+      notification.success({
+        message: 'Update map Success',
+      });
+    },
+    onError: () => {
+      notification.error({
+        message: 'Error',
+        description: 'Error on update map',
+      });
+    }
+  });
+
+  const [deleteMap] = useMutation(DELETE_MAP, {
+    onCompleted: () => deleteMapHandler(),
+    onError: () => {
+      notification.error({
+        message: 'Error',
+        description: 'Error on delete map',
+      });
+    },
+  });
+
   const [fetchContent] = useLazyQuery(GET_CONTENTS, {
     onCompleted: (data) => getContentHandler(data),
     onError: () => {
@@ -133,19 +212,70 @@ const Dashboard = (props) => {
     },
   });
 
-  const [createWorld] = useMutation(CREATE_WORLD, {
-    update(_, { data }) {
-      const array = [...worlds];
-      array.push(data?.insert_Worlds?.returning[0]);
-      setWorlds(array);
+  const [fetchContentType] = useLazyQuery(GET_CONTENT_TYPE, {
+    onCompleted: (data) => getContentTypeHandler(data),
+    onError: () => {
+      notification.error({
+        message: 'Error',
+        description: 'Error on load content type',
+      });
     },
   });
 
-  const [createMap] = useMutation(CREATE_MAP, {
+  const [fetchResources] = useLazyQuery(GET_RESOURCES, {
+    onCompleted: (data) => getResourcesHandler(data),
+    onError: () => {
+      notification.error({
+        message: 'Error',
+        description: 'Error on load resources',
+      });
+    },
+  });
+
+  const [createContent] = useMutation(CREATE_CONTENT, {
     update(_, { data }) {
-      const array = [...maps];
-      array.push(data?.insert_Maps?.returning[0]);
-      setMaps(array);
+      const array = [...content];
+      array.push(data?.insert_Contents?.returning[0]);
+      setContent(array);
+      setShowModal(null);
+      notification.success({
+        message: 'Create Content Success',
+      });
+    },
+    onError: () => {
+      notification.error({
+        message: 'Error',
+        description: 'Error on create content',
+      });
+    },
+  });
+
+  const [updateContentItem] = useMutation(UPDATE_CONTENT, {
+    update(_, { data }) {
+      const array = [...content];
+      const indexItem = findIndexItem(array, 'id', data?.update_Contents?.returning[0].id);
+      array[indexItem] = data?.update_Contents?.returning[0];
+      setContent(array);
+      setShowModal(null);
+      notification.success({
+        message: 'Update Content Success',
+      });
+    },
+    onError: () => {
+      notification.error({
+        message: 'Error',
+        description: 'Error on update content',
+      });
+    },
+  });
+
+  const [deleteContent] = useMutation(DELETE_CONTENT, {
+    onCompleted: (data) => deleteContentHandler(data),
+    onError: () => {
+      notification.error({
+        message: 'Error',
+        description: 'Error on delete content',
+      });
     },
   });
   
@@ -166,89 +296,6 @@ const Dashboard = (props) => {
       setEditName(false);
     }
   };
-
-  const [insertContent] = useMutation(INSERT_CONTENT, {
-    update(_, { data }) {
-      const body = data.insert_WorldMapInteractiveContentHolderContentMapping.returning[0];
-      const prevArray = [...selectedContents];
-      prevArray.push(body);
-      setSelectedContent(prevArray);
-      notification.success({
-        message: 'Add Content Success',
-      });
-    },
-  });
-
-  // eslint-disable-next-line camelcase
-  const updateContentHandler = ({ update_WorldMapInteractiveContentHolderContentMapping }) => {
-    const updatedItem = update_WorldMapInteractiveContentHolderContentMapping.returning[0];
-    const prevArray = [...selectedContents];
-    prevArray[activeContent] = updatedItem;
-    setSelectedContent(prevArray);
-    notification.success({
-      message: 'Update Content Success',
-    });
-  };
-
-  const [updateContent] = useMutation(UPDATE_CONTENT, {
-    onCompleted: (data) => updateContentHandler(data),
-    onError: () => {
-      notification.error({
-        message: 'Update Error',
-        description: 'Error on update World',
-      });
-    },
-  });
-
-  const contentHandler = (event, id) => {
-    setActiveContent(id);
-    updateContent({
-      variables: {
-        _eq: selectedContents[id].InteractiveContentHolderID, // InteractiveContentHolderID
-        _eq1: activeWorld.id, // WorldID
-        ContentID: event.target.value // setContent
-      }
-    });
-  };
-
-  const deleteContentHandler = () => {
-    notification.success({
-      message: 'Delete Content',
-    });
-  };
-
-  const [deleteContent] = useMutation(DELETE_CONTENT, {
-    onCompleted: () => deleteContentHandler(),
-    onError: () => {
-      notification.error({
-        message: 'Update Error',
-        description: 'Error on update World',
-      });
-    },
-  });
-  
-  const addItemContent = () => {
-    const id = checkId(selectedContents);
-    insertContent({
-      variables: {
-        WorldID: activeWorld.id,
-        MapID: activeWorld.mapID,
-        InteractiveContentHolderID: id,
-        ContentID: contentWorld[0].id,
-      }
-    });
-  };
-
-  const removeContent = (id) => {
-    deleteContent({
-      variables: {
-        _eq: activeWorld.id,
-        _eq1: selectedContents[id].InteractiveContentHolderID
-      }
-    });
-    const newArray = removeItemArray(selectedContents, id, 1);
-    setSelectedContent(newArray);
-  };
  
   useEffect(() => {
     const ownerId = +localStorage.getItem('userId');
@@ -256,7 +303,9 @@ const Dashboard = (props) => {
     fetchWorlds();
     fetchMaps();
     fetchContent();
-  }, [activeWorld, selectedContents]);
+    fetchContentType();
+    fetchResources();
+  }, [activeWorld, activeMap]);
 
   return (
     <>
@@ -295,25 +344,13 @@ const Dashboard = (props) => {
           nameWorld={nameWorld}
           editTitleHandler={editTitleHandler}
           editName={editName}
-          contentWorld={contentWorld}
-          addContent={addItemContent}
-          selectedContents={selectedContents}
-          contentHandler={contentHandler}
-          removeContent={removeContent}
         />
       )}
 
       {activeWorld && activeTab === 'World Content Configuration' && (
         <div className="grid col-span-12">
-          <ContentScreen
+          <WorldContentConfiguration
             activeWorld={activeWorld}
-            contentWorld={contentWorld}
-            addContent={addItemContent}
-            selectedContents={selectedContents}
-            contentHandler={contentHandler}
-            removeContent={removeContent}
-            maps={maps}
-            updateWorld={updateWorld}
           />
         </div>
       )}
@@ -334,14 +371,30 @@ const Dashboard = (props) => {
           setDrawerBody={setShowModal}
           setDrawerTitle={setDrawerTitle}
           activeTab={activeTab}
+          deleteMap={deleteMap}
+          setIdMapActive={setIdMapActive}
+          updateMap={updateMap}
         />
       )}
-      {activeMap && activeTab === 'screens' && (
+      {activeMap && activeTab === 'Interactive Content Holder' && (
         <MapScreens
           activeMap={activeMap}
           setDrawerBody={setShowModal}
           setDrawerTitle={setDrawerTitle}
         />
+      )}
+
+      {activeTab === 'contents' && (
+      <Contents
+        content={content}
+        setDrawerTitle={setDrawerTitle}
+        setShowModal={setShowModal}
+        createContent={createContent}
+        contentType={contentType}
+        resources={resources}
+        deleteContent={deleteContent}
+        updateContentItem={updateContentItem}
+      />
       )}
     </>
   );

@@ -5,7 +5,14 @@ import DrawerTitle from './DrawerTitle';
 import NewMapForm from './NewMapForm';
 
 const MapSettings = ({
-  activeMap, updateMap, drawerBody, setDrawerBody, drawerTitle, setDrawerTitle, deleteMap
+  activeMap,
+  updateMap,
+  drawerBody, 
+  setDrawerBody, 
+  drawerTitle, 
+  setDrawerTitle,
+  deleteMap,
+  setIdMapActive
 }) => {
   return (
     <>
@@ -40,6 +47,7 @@ const MapSettings = ({
                         activeMap={activeMap}
                         updateMap={updateMap}
                         deleteMap={deleteMap}
+                        setIdMapActive={setIdMapActive}
                       />
                     );
                   }}
@@ -60,17 +68,20 @@ MapSettings.propTypes = {
     id: PropTypes.number,
     name: PropTypes.string
   }).isRequired,
-  updateMap: PropTypes.func.isRequired,
+  updateMap: PropTypes.func,
   deleteMap: PropTypes.func,
   drawerBody: PropTypes.node,
   drawerTitle: PropTypes.node,
   setDrawerTitle: PropTypes.func.isRequired,
-  setDrawerBody: PropTypes.func.isRequired
+  setDrawerBody: PropTypes.func.isRequired,
+  setIdMapActive: PropTypes.func,
 };
 MapSettings.defaultProps = {
   drawerBody: null,
   drawerTitle: null,
-  deleteMap: () => {}
+  deleteMap: () => {},
+  updateMap: () => {},
+  setIdMapActive: () => {}
 };
 
 export default MapSettings;

@@ -9,79 +9,79 @@ const request = {
         description
         title
         url
+        ContentType
       }
     }
   `,
-  INSERT_CONTENT: gql`
-    mutation insert_WorldMapInteractiveContentHolderContentMapping(
-      $ContentID: Int,
-      $InteractiveContentHolderID: Int,
-      $MapID: Int,
-      $WorldID: Int) {
-      insert_WorldMapInteractiveContentHolderContentMapping(
-        objects: {
-          WorldID: $WorldID,
-          MapID: $MapID,
-          InteractiveContentHolderID: $InteractiveContentHolderID,
-          ContentID: $ContentID}) {
+  CREATE_CONTENT: gql`
+    mutation CreateContents(
+      $ContentType: ContentTypes_enum,
+      $ResourceID: bigint,
+      $description: String,
+      $title: String,
+      $url: String) {
+      insert_Contents(objects: {
+        description: $description,
+        title: $title,
+        url: $url,
+        ContentType: $ContentType,
+        ResourceID: $ResourceID
+            }) {
         returning {
-          Content {
-            ResourceID
-            description
-            id
-            title
-            url
-          }
-          InteractiveContentHolderID
-          InteractiveContentHolder {
-              id
-              ResourceID
-              RegionID
-            }
+          url
+          title
+          id
+          description
+          ContentType
+          ResourceID
         }
       }
     }
   `,
+  GET_CONTENT_TYPE: gql`
+    query ContentTypes {
+      ContentTypes {
+        ContentType
+      }
+    }
+  `,
   DELETE_CONTENT: gql`
-    mutation deleteItem($_eq: Int , $_eq1: Int) {
-      delete_WorldMapInteractiveContentHolderContentMapping(
-        where: {
-          WorldID: {_eq: $_eq},
-          InteractiveContentHolder: {id: {_eq: $_eq1}
-          }
-        }) {
+    mutation deleteContent($_eq: Int) {
+      delete_Contents(where: {id: {_eq: $_eq}}) {
         returning {
-          ContentID
+          id
         }
       }
     }
   `,
   UPDATE_CONTENT: gql`
-    mutation updateContent($_eq: Int, $_eq1: Int, $ContentID: Int) {
-      update_WorldMapInteractiveContentHolderContentMapping(
+    mutation create(
+      $_eq: Int,
+      $ContentType: ContentTypes_enum,
+      $ResourceID: bigint,
+      $description: String,
+      $title: String,
+      $url: String) {
+      update_Contents(
         where: {
-          WorldID: {_eq: $_eq1},
-          InteractiveContentHolderID: {_eq: $_eq}
-        },
-        _set: {ContentID: $ContentID}) {
+          id: {_eq: $_eq}},
+           _set: {
+            url: $url,
+            title: $title, 
+            description: $description, 
+            ResourceID: $ResourceID, 
+            ContentType: $ContentType}) {
         returning {
-          Content {
-            url
-            title
-            id
-            description
-            ResourceID
-          }
-          InteractiveContentHolderID
-          InteractiveContentHolder {
-              id
-              ResourceID
-              RegionID
-            }
+          ContentType
+          ResourceID
+          description
+          id
+          title
+          url
         }
       }
     }
-  `,
+  `
 };
 
 export default request;
