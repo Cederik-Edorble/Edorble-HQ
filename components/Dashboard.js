@@ -112,17 +112,6 @@ const Dashboard = (props) => {
   const getResourcesHandler = ({ Resources }) => {
     setResources(Resources); 
   };
-  
-  const [fetchMaps] = useLazyQuery(GET_MAPS, {
-    onCompleted: (data) => getMapHandler(data),
-    fetchPolicy: 'network-only',
-    onError: () => {
-      notification.error({
-        message: 'Error',
-        description: 'Error on load Maps',
-      });
-    },
-  });
 
   const [fetchWorlds] = useLazyQuery(GET_WORLDS, {
     onCompleted: (data) => getWorldHandler(data),
@@ -161,6 +150,17 @@ const Dashboard = (props) => {
         description: 'Error on update world',
       });
     }
+  });
+
+  const [fetchMaps] = useLazyQuery(GET_MAPS, {
+    onCompleted: (data) => getMapHandler(data),
+    fetchPolicy: 'network-only',
+    onError: () => {
+      notification.error({
+        message: 'Error',
+        description: 'Error on load Maps',
+      });
+    },
   });
 
   const [createMap] = useMutation(CREATE_MAP, {
@@ -363,6 +363,7 @@ const Dashboard = (props) => {
           setActiveMap={setActiveMap}
           createMap={createMap}
           setActiveTab={setActiveTab}
+          resources={resources}
         />
       )}
       {activeMap && activeTab === 'map-settings' && (
@@ -381,6 +382,9 @@ const Dashboard = (props) => {
           activeMap={activeMap}
           setDrawerBody={setShowModal}
           setDrawerTitle={setDrawerTitle}
+          fetchMaps={fetchMaps}
+          setActiveMap={setActiveMap}
+          maps={maps}
         />
       )}
 

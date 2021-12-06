@@ -1,162 +1,141 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useLazyQuery, useMutation } from '@apollo/client';
+import { useMutation, useLazyQuery } from '@apollo/client';
 import { Button, notification } from 'antd';
-import {
-  CREATE_MAP_REGION, DELETE_MAP_REGION, GET_MAP_REGIONS, UPDATE_MAP_REGION
-} from '../GraphQL/region/query';
-import {
-  CREATE_REGION_SCREEN, DELETE_REGION_SCREEN,
-  GET_REGIONS_SCREEN, UPDATE_REGION_SCREEN,
-} from '../GraphQL/screen/query';
 import DrawerTitle from './DrawerTitle';
 import NewRegionForm from './NewRegionForm';
 import NewScreenForm from './NewScreenForm';
+import request from '../request/contentHolder';
+import { filterArray, filterArrayScreen } from '../Utils/helper';
 
-const MapScreens = ({ setDrawerBody, setDrawerTitle, activeMap }) => {
-  const [regions, setRegions] = useState();
-  const [screens, setScreens] = useState();
-  const [selectedRegion, setSelectedRegion] = useState();
-  const [selectedScreen, setSelectedScreen] = useState();
-  const getRegionsHandler = ({ getMapRegion }) => setRegions(getMapRegion);
-  const getScreenHandler = ({ getRegionScreen }) => setScreens(getRegionScreen);
-  const createScreenHandler = ({ createScreen }) => {
-    setScreens(createScreen);
-    setDrawerBody(null);
-  };
-  const createRegionHandler = ({ createRegion }) => {
-    setRegions(createRegion);
-    setDrawerBody(null);
-  };
-  const updateRegionHandler = ({ updateRegion }) => {
-    setRegions(updateRegion);
-    setDrawerBody(null);
-  };
-  const updateScreenHandler = ({ updateScreen }) => {
-    setScreens(updateScreen);
-    setDrawerBody(null);
-  };
-  const deleteRegionHandler = ({ deleteRegion }) => {
-    setRegions(deleteRegion);
-    setScreens(null);
-    setSelectedRegion(null);
-    setDrawerBody(null);
-  };
-  const deleteScreenHandler = ({ deleteScreen }) => {
-    setScreens(deleteScreen);
-    setSelectedScreen(null);
-    setDrawerBody(null);
-  };
-  const [fetchRegions] = useLazyQuery(GET_MAP_REGIONS, {
-    onCompleted: (data) => getRegionsHandler(data),
+const MapScreens = ({
+  setDrawerBody, setDrawerTitle, activeMap, fetchMaps, setActiveMap, maps
+}) => {
+  const {
+    CREATE_REGION, DELETE_REGION, UPDATE_REGION, GET_SCREEN_TYPES, CREATE_SCREEN, DELETE_SCREEN, UPDATE_SCREEN 
+  } = request;
+  const [screens, setScreens] = useState([]);
+  const [selectedRegion, setSelectedRegion] = useState({});
+  const [selectedScreen, setSelectedScreen] = useState({});
+  const [screenTypes, setScreenTypes] = useState([]);
+
+  const [getScreenTypes] = useLazyQuery(GET_SCREEN_TYPES, {
+    onCompleted: (data) => setScreenTypes(data?.InteractiveContentHolderTypes),
     onError: () => {
       notification.error({
         message: 'Error',
-        description: 'Error on load Map Region',
+        description: 'Error on getting screens types',
       });
     },
   });
-  const [fetchScreens] = useLazyQuery(GET_REGIONS_SCREEN, {
-    onCompleted: (data) => getScreenHandler(data),
-    onError: () => {
-      notification.error({
-        message: 'Error',
-        description: 'Error on load Region Screen',
-      });
-    },
-  });
-  const [createRegion] = useMutation(CREATE_MAP_REGION, {
-    onCompleted: (data) => createRegionHandler(data),
-    onError: () => {
-      notification.error({
-        message: 'Error',
-        description: 'Error on create Region',
-      });
-    },
-  });
-  const [updateRegion] = useMutation(UPDATE_MAP_REGION, {
-    onCompleted: (data) => updateRegionHandler(data),
-    onError: () => {
-      notification.error({
-        message: 'Error',
-        description: 'Error on update Region',
-      });
-    },
-  });
-  const [updateScreen] = useMutation(UPDATE_REGION_SCREEN, {
-    onCompleted: (data) => updateScreenHandler(data),
-    onError: () => {
-      notification.error({
-        message: 'Error',
-        description: 'Error on update Screen',
-      });
-    },
-  });
-  const [deleteRegion] = useMutation(DELETE_MAP_REGION, {
-    onCompleted: (data) => deleteRegionHandler(data),
-    onError: () => {
-      notification.error({
-        message: 'Error',
-        description: 'Error on delete Region',
-      });
-    },
-  });
-  const [createScreen] = useMutation(CREATE_REGION_SCREEN, {
-    onCompleted: (data) => createScreenHandler(data),
-    onError: () => {
-      notification.error({
-        message: 'Error',
-        description: 'Error on create Region Screen',
-      });
-    },
-  });
-  const [deleteScreen] = useMutation(DELETE_REGION_SCREEN, {
-    onCompleted: (data) => deleteScreenHandler(data),
-    onError: () => {
-      notification.error({
-        message: 'Error',
-        description: 'Error on delete Screen',
-      });
-    },
-  });
+
   useEffect(() => {
-    fetchRegions({
-      variables: {
-        map: activeMap.id,
-      },
-    });
+    getScreenTypes();
   }, []);
-  useEffect(() => {
-    if (selectedRegion) {
-      fetchScreens({
-        variables: {
-          reg: selectedRegion.id,
-        },
+
+  const regionHandler = () => {
+    fetchMaps();
+    setDrawerBody(null);
+    notification.success({
+      message: 'Success',
+    });
+  };
+
+  const [createRegion] = useMutation(CREATE_REGION, {
+    onCompleted: () => regionHandler(),
+    onError: () => {
+      notification.error({
+        message: 'Error',
+        description: 'Error on create region',
       });
+    },
+  });
+
+  const [deleteRegion] = useMutation(DELETE_REGION, {
+    onCompleted: () => regionHandler(),
+    onError: () => {
+      notification.error({
+        message: 'Error',
+        description: 'Error on delete region',
+      });
+    },
+  });
+
+  const [updateRegion] = useMutation(UPDATE_REGION, {
+    onCompleted: () => regionHandler(),
+    onError: () => {
+      notification.error({
+        message: 'Error',
+        description: 'Error on update region',
+      });
+    },
+  });
+
+  const [createScreen] = useMutation(CREATE_SCREEN, {
+    onCompleted: () => regionHandler(),
+    onError: () => {
+      notification.error({
+        message: 'Error',
+        description: 'Error on create screen',
+      });
+    },
+  });
+
+  const [updateScreen] = useMutation(UPDATE_SCREEN, {
+    onCompleted: () => regionHandler(),
+    onError: () => {
+      notification.error({
+        message: 'Error',
+        description: 'Error on update screen',
+      });
+    },
+  });
+
+  const [deleteScreen] = useMutation(DELETE_SCREEN, {
+    onCompleted: () => regionHandler(),
+    onError: () => {
+      notification.error({
+        message: 'Error',
+        description: 'Error on delete screen',
+      });
+    },
+  });
+
+  useEffect(() => {
+    const itemMap = filterArray(maps, 'id', activeMap.id);
+    setActiveMap(itemMap[0]);
+  }, [maps]);
+
+  useEffect(() => {
+    const getScreens = filterArrayScreen(activeMap.MapRegionMappings, selectedRegion?.id);
+    if (selectedRegion && getScreens.length > 0) {
+      setScreens(getScreens[0]);
+    } else {
+      setScreens();
     }
-  }, [selectedRegion]);
+  }, [activeMap, selectedRegion]);
 
   return (
     <>
       <div className="col-span-12 p-2 mb-5 flex justify-center">
-        {regions
-        && regions.map((region) => (
+        {activeMap
+        && activeMap.MapRegionMappings.map((item, index) => (
           <Button
             htmlType="submit"
-            key={region.id}
+            key={[item.Region.name, index].join('_')}
             onClick={() => {
               setSelectedScreen(null);
-              setSelectedRegion(region);
+              setSelectedRegion(item.Region);
             }}
             type={
               selectedRegion
-                ? selectedRegion.id === region.id && 'primary'
+                ? selectedRegion.id === item.Region.id && 'primary'
                 : 'default'
             }
             size="large"
             className="rounded font-bold mr-2"
           >
-            {region.name}
+            {item.Region.name}
           </Button>
         ))}
         <Button
@@ -203,13 +182,14 @@ const MapScreens = ({ setDrawerBody, setDrawerTitle, activeMap }) => {
           </Button>
         )}
       </div>
+      
       {selectedRegion && (
         <div className="col-span-12 p-2 mb-5 flex justify-center">
           {screens
-          && screens.map((screen) => (
+          && screens?.Region?.InteractiveContentHolders?.map((screen, index) => (
             <Button
               htmlType="submit"
-              key={screen.id}
+              key={[screen.id, index].join('_')}
               onClick={() => setSelectedScreen(screen)}
               type={
                 selectedScreen
@@ -218,7 +198,7 @@ const MapScreens = ({ setDrawerBody, setDrawerTitle, activeMap }) => {
               }
               className="rounded font-bold mr-2"
             >
-              {screen.name}
+              {`id: ${screen.id} type: ${screen.InteractiveContentHolderType}`}
             </Button>
           ))}
 
@@ -230,7 +210,9 @@ const MapScreens = ({ setDrawerBody, setDrawerTitle, activeMap }) => {
               setDrawerTitle(<DrawerTitle text="New Screen" />);
               setDrawerBody(
                 <NewScreenForm
+                  screenTypes={screenTypes}
                   activeRegion={selectedRegion}
+                  activeScreen={selectedScreen}
                   createScreen={createScreen}
                 />
               );
@@ -249,6 +231,7 @@ const MapScreens = ({ setDrawerBody, setDrawerTitle, activeMap }) => {
                 setDrawerTitle(<DrawerTitle text="Edit Screen" />);
                 setDrawerBody(
                   <NewScreenForm
+                    screenTypes={screenTypes}
                     activeRegion={selectedRegion}
                     activeScreen={selectedScreen}
                     updateScreen={updateScreen}
@@ -273,11 +256,18 @@ MapScreens.propTypes = {
   setDrawerTitle: PropTypes.func.isRequired,
   activeMap: PropTypes.shape({
     id: PropTypes.number,
+    MapRegionMappings: PropTypes.arrayOf(PropTypes.shape({}))
   }),
+  fetchMaps: PropTypes.func,
+  setActiveMap: PropTypes.func,
+  maps: PropTypes.arrayOf(PropTypes.shape({})),
 };
 
 MapScreens.defaultProps = {
   activeMap: {},
+  fetchMaps: () => {},
+  setActiveMap: () => {},
+  maps: [],
 };
 
 export default MapScreens;

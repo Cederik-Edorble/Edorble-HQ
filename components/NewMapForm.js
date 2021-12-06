@@ -5,7 +5,7 @@ import Input from './Input';
 import styles from '../styles/NewMapForm.module.scss';
 
 const NewMapForm = ({
-  createMap, activeMap, deleteMap, updateMap, setIdMapActive
+  createMap, activeMap, deleteMap, updateMap, setIdMapActive, resources
 }) => {
   const [fields, setFields] = useState({
     name: activeMap.name ?? '',
@@ -13,7 +13,7 @@ const NewMapForm = ({
     windowsLink: activeMap.windowsLink ?? '',
     macLink: activeMap.macLink ?? '',
     version: activeMap.version ?? '',
-    ResourceID: activeMap.ResourceID ?? 1,
+    ResourceID: activeMap.ResourceID ?? resources[1]?.id,
   });
 
   const create = async (ev) => {
@@ -63,23 +63,29 @@ const NewMapForm = ({
       <div className="col-span-12">
         <form onSubmit={Object.keys(activeMap)?.length ? update : create}>
           <Row type="flex" align="center" className="mt-5">
-            {Object.keys(fields).map((item, index) => (
-              <div className={styles.inputBox} key={[index, item].join('_')}>
-                <Input
-                  className="border-2
-                    border-edorble-200
-                    hover:border-edorble-200
-                    focus:border-edorble-200
-                    w-full
-                    rounded"
-                  onChange={fieldsHandler}
-                  placeholder={item}
-                  value={fields[item]}
-                  id={item}
-                  type={item === 'ResourceID' ? 'number' : 'text'}
-                />
-              </div>
-            ))}
+            {Object.keys(fields).map((item, index) => {
+              let mapInput;
+              if (item !== 'ResourceID') {
+                mapInput = (
+                  <div className={styles.inputBox} key={[index, item].join('_')}>
+                    <Input
+                      className="border-2
+                        border-edorble-200
+                        hover:border-edorble-200
+                        focus:border-edorble-200
+                        w-full
+                        rounded"
+                      onChange={fieldsHandler}
+                      placeholder={item}
+                      value={fields[item]}
+                      id={item}
+                      type={item === 'id' ? 'number' : 'text'}
+                    />
+                  </div>
+                );
+              }
+              return mapInput;
+            })}
             <Col span={24} className="mt-5">
               <Button
                 loading={false}
@@ -125,6 +131,9 @@ NewMapForm.propTypes = {
     version: PropTypes.string,
     ResourceID: PropTypes.number
   }),
+  resources: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.number
+  })),
   createMap: PropTypes.func,
   deleteMap: PropTypes.func,
   updateMap: PropTypes.func,
@@ -137,6 +146,7 @@ NewMapForm.defaultProps = {
   createMap: () => {},
   updateMap: () => {},
   setIdMapActive: () => {},
+  resources: [],
 };
 
 export default NewMapForm;

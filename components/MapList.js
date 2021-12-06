@@ -5,7 +5,7 @@ import NewMapForm from './NewMapForm';
 import DrawerTitle from './DrawerTitle';
 
 const MapList = ({
-  maps, setActiveMap, createMap, setShowModal, setDrawerTitle, setActiveTab,
+  maps, setActiveMap, createMap, setShowModal, setDrawerTitle, setActiveTab, resources
 }) => {
   return (
     <>
@@ -39,6 +39,7 @@ const MapList = ({
             setShowModal(
               <NewMapForm
                 createMap={createMap}
+                resources={resources}
               />
             );
           }}
@@ -55,9 +56,16 @@ MapList.propTypes = {
   maps: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   setActiveMap: PropTypes.func.isRequired,
   createMap: PropTypes.func.isRequired,
-  setShowModal: PropTypes.func.isRequired,
-  setDrawerTitle: PropTypes.func.isRequired,
+  setShowModal: PropTypes.func,
+  setDrawerTitle: PropTypes.func,
   setActiveTab: PropTypes.func.isRequired,
+  resources: PropTypes.arrayOf(PropTypes.shape({})),
+};
+
+MapList.defaultProps = {
+  resources: [],
+  setShowModal: () => {},
+  setDrawerTitle: () => {},
 };
 
 export default MapList;
