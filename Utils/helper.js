@@ -7,7 +7,7 @@ export const removeItemArray = (array, id, count) => {
 };
 
 export const filterArray = (array, name, id) => array.filter((item) => item[name] === id);
-
+export const filterArrayScreen = (array, id) => array.filter((item) => item.Region.id === id);
 export const checkId = (arrayData) => {
   const countId = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   const arrayId = arrayData.map((item) => {

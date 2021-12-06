@@ -3,17 +3,18 @@ import { Button, Col, Row } from 'antd';
 import PropTypes from 'prop-types';
 
 const NewRegionForm = ({
-  activeMap, createRegion, activeRegion, updateRegion, deleteRegion
+  activeMap, createRegion, activeRegion, updateRegion, deleteRegion,
 }) => {
   const [name, setName] = useState(activeRegion?.name ?? '');
+
   const create = async (ev) => {
     ev.preventDefault();
     createRegion({
       variables: {
-        createRegionInput: {
-          map: +activeMap.id,
-          name,
-        },
+        MapID: activeMap.id,
+        ResourceID: 1,
+        ResourceID1: 1,
+        name
       },
     });
   };
@@ -22,21 +23,21 @@ const NewRegionForm = ({
     ev.preventDefault();
     updateRegion({
       variables: {
-        updateRegionInput: {
-          id: activeRegion.id,
-          map: +activeMap.id,
-          name,
-        },
-      },
+        _eq: activeRegion.id, // id
+        name
+      }
     });
   };
+
   const remove = async (id) => {
     deleteRegion({
       variables: {
-        id
-      },
+        _eq: activeMap.id, // MapId
+        _eq1: id, // RegionID
+      }
     });
   };
+
   return (
     <div className="grid grid-cols-12">
       <div className="col-span-12">

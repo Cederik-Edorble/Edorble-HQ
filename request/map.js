@@ -21,6 +21,19 @@ const request = {
           InteractiveContentHolder {
             id
             RegionID
+            InteractiveContentHolderType
+          }
+        }
+        MapRegionMappings {
+          MapID
+          Region {
+            name
+            id
+            InteractiveContentHolders {
+              RegionID
+              id
+              InteractiveContentHolderType
+            }
           }
         }
       }
@@ -62,6 +75,17 @@ const request = {
               RegionID
             }
           }
+          MapRegionMappings {
+            MapID
+            Region {
+              name
+              id
+              InteractiveContentHolders {
+                RegionID
+                id
+              }
+            }
+          }
         }
       }
     }
@@ -93,6 +117,29 @@ const request = {
         macLink
         ResourceID
         id
+        WorldMapInteractiveContentHolderContentMappings {
+            Content {
+              url
+              title
+              id
+              description
+            }
+            InteractiveContentHolder {
+              id
+              RegionID
+            }
+          }
+        MapRegionMappings {
+          MapID
+          Region {
+            name
+            id
+            InteractiveContentHolders {
+              RegionID
+              id
+            }
+          }
+        }
       }
     }
   }
