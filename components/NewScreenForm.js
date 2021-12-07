@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 const NewScreenForm = ({
   activeRegion, createScreen, updateScreen, deleteScreen, activeScreen, screenTypes,
 }) => {
-  // const [name, setName] = useState('');
+  const [name, setName] = useState(activeScreen?.name ?? '');
   const [type, setType] = useState(activeScreen?.InteractiveContentHolderType ?? 'Screen');
   
   const create = (e) => {
@@ -15,6 +15,7 @@ const NewScreenForm = ({
         InteractiveContentHolderType: type,
         RegionID: activeRegion.id,
         ResourceID: 30,
+        name,
       }
     });
   };
@@ -26,6 +27,7 @@ const NewScreenForm = ({
         _eq1: activeScreen.id, // id
         _eq: activeRegion.id, // RegionID
         InteractiveContentHolderType: type,
+        name,
       }
     });
   };
@@ -35,6 +37,7 @@ const NewScreenForm = ({
       variables: {
         _eq: activeRegion.id, // RegionID
         _eq1: id, // id
+
       },
     });
   };
@@ -44,7 +47,7 @@ const NewScreenForm = ({
       <div className="col-span-12">
         <form onSubmit={activeScreen ? update : create}>
           <Row type="flex" align="center" className="mt-5">
-            {/* <Col span={24}>
+            <Col span={24}>
               <input
                 type="text"
                 onChange={(ev) => {
@@ -59,7 +62,7 @@ const NewScreenForm = ({
                     w-full rounded"
                 placeholder="Screen Name"
               />
-            </Col> */}
+            </Col>
             <Col span={24} className="mt-5">
               <div>
                 <select

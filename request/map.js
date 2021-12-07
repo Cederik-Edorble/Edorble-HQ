@@ -22,6 +22,7 @@ const request = {
             id
             RegionID
             InteractiveContentHolderType
+            name
           }
         }
         MapRegionMappings {
@@ -33,6 +34,7 @@ const request = {
               RegionID
               id
               InteractiveContentHolderType
+              name
             }
           }
         }
@@ -73,6 +75,8 @@ const request = {
             InteractiveContentHolder {
               id
               RegionID
+              InteractiveContentHolderType
+              name
             }
           }
           MapRegionMappings {
@@ -83,6 +87,8 @@ const request = {
               InteractiveContentHolders {
                 RegionID
                 id
+                InteractiveContentHolderType
+              name
               }
             }
           }
@@ -127,6 +133,8 @@ const request = {
             InteractiveContentHolder {
               id
               RegionID
+              InteractiveContentHolderType
+              name
             }
           }
         MapRegionMappings {
@@ -137,6 +145,8 @@ const request = {
             InteractiveContentHolders {
               RegionID
               id
+              InteractiveContentHolderType
+              name
             }
           }
         }

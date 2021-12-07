@@ -65,11 +65,13 @@ const request = {
     mutation createScreen(
       $InteractiveContentHolderType: InteractiveContentHolderTypes_enum, 
       $RegionID: Int, 
-      $ResourceID: bigint) {
+      $ResourceID: bigint,
+      $name: String) {
       insert_InteractiveContentHolder(objects: {
         InteractiveContentHolderType: $InteractiveContentHolderType,
         ResourceID: $ResourceID, 
-        RegionID: $RegionID},
+        RegionID: $RegionID,
+        name: $name},
         on_conflict: {
           constraint: InteractiveContentHolder_pkey, 
           update_columns: id}) {
@@ -92,13 +94,15 @@ const request = {
     mutation updateScreen(
       $_eq: Int, 
       $_eq1: Int, 
-      $InteractiveContentHolderType: InteractiveContentHolderTypes_enum) {
+      $InteractiveContentHolderType: InteractiveContentHolderTypes_enum,
+      $name: String) {
       update_InteractiveContentHolder(
         where: {
           id: {_eq: $_eq1}, 
           RegionID: {_eq: $_eq}},
            _set: {
-             InteractiveContentHolderType: $InteractiveContentHolderType}) {
+             InteractiveContentHolderType: $InteractiveContentHolderType,
+             name: $name}) {
         returning {
           id
         }

@@ -198,7 +198,7 @@ const MapScreens = ({
               }
               className="rounded font-bold mr-2"
             >
-              {`id: ${screen.id} type: ${screen.InteractiveContentHolderType}`}
+              {`${screen.name}`}
             </Button>
           ))}
 
