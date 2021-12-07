@@ -1,0 +1,33 @@
+import PropTypes from 'prop-types';
+import styles from '../styles/ItemContent.module.scss';
+import TextField from './UI/TextField/TextField';
+import Button from './UI/Button/Button';
+
+const ItemContent = ({
+  contentName, contentType, holderType, textBtn 
+}) => (
+  <div className={styles.container}>
+    <TextField text={contentName} styleType="itemText" />
+    <TextField text={contentType} styleType="itemText" />
+    <TextField text={holderType} styleType="itemText" />
+    <Button color="removeContent">
+      {textBtn}
+    </Button>
+  </div>
+);
+
+ItemContent.propTypes = {
+  contentName: PropTypes.string,
+  contentType: PropTypes.string,
+  holderType: PropTypes.string,
+  textBtn: PropTypes.string,
+};
+
+ItemContent.defaultProps = {
+  contentName: '',
+  contentType: '',
+  holderType: '',
+  textBtn: '',
+};
+
+export default ItemContent;

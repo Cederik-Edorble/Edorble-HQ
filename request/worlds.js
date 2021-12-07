@@ -8,6 +8,25 @@ const request = {
         mapID
         id
         defaultLogoURL
+        WorldMapInteractiveContentHolderContentMappings {
+          WorldID
+          MapID
+          InteractiveContentHolder {
+            InteractiveContentHolderType
+            RegionID
+            ResourceID
+            id
+            name
+          }
+          Content {
+            id
+            description
+            title
+            url
+            ResourceID
+            ContentType
+          }
+        }
       }
     }
   `,
@@ -19,6 +38,25 @@ const request = {
           name
           mapID
           defaultLogoURL
+          WorldMapInteractiveContentHolderContentMappings {
+            WorldID
+            MapID
+            InteractiveContentHolder {
+              InteractiveContentHolderType
+              RegionID
+              ResourceID
+              id
+              name
+            }
+            Content {
+              id
+              description
+              title
+              url
+              ResourceID
+              ContentType
+            }
+          }
         }
       }
     }
@@ -31,6 +69,25 @@ const request = {
           name
           mapID
           defaultLogoURL
+          WorldMapInteractiveContentHolderContentMappings {
+            WorldID
+            MapID
+            InteractiveContentHolder {
+              InteractiveContentHolderType
+              RegionID
+              ResourceID
+              id
+              name
+            }
+            Content {
+              id
+              description
+              title
+              url
+              ResourceID
+              ContentType
+            }
+          }
         }
       }
     }
