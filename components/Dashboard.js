@@ -351,6 +351,8 @@ const Dashboard = (props) => {
         <div className="grid col-span-12">
           <WorldContentConfiguration
             activeWorld={activeWorld}
+            setDrawerBody={setShowModal}
+            setDrawerTitle={setDrawerTitle}
           />
         </div>
       )}

@@ -2,12 +2,11 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
 
-  .wrapperSelect {
+  .content {
     width: 100%;
-    margin-bottom: 15px;
     display: flex;
+    justify-content: space-between;
     align-items: center;
   }
 }
