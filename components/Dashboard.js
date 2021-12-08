@@ -376,6 +376,8 @@ const Dashboard = (props) => {
             activeWorld={activeWorld}
             setDrawerBody={setShowModal}
             setDrawerTitle={setDrawerTitle}
+            screenTypes={screenTypes}
+            content={content}
           />
         </div>
       )}
