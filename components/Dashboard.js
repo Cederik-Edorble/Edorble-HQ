@@ -59,7 +59,6 @@ const Dashboard = (props) => {
   
   const [getScreenTypes] = useLazyQuery(GET_SCREEN_TYPES, {
     onCompleted: (data) => {
-      console.log('map screen', data);
       handlerHolder(data); 
     },
     onError: () => {
