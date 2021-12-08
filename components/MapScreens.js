@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useMutation, useLazyQuery } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { Button, notification } from 'antd';
 import DrawerTitle from './DrawerTitle';
 import NewRegionForm from './NewRegionForm';
@@ -9,30 +9,15 @@ import request from '../request/contentHolder';
 import { filterArray, filterArrayScreen } from '../Utils/helper';
 
 const MapScreens = ({
-  setDrawerBody, setDrawerTitle, activeMap, fetchMaps, setActiveMap, maps
+  setDrawerBody, setDrawerTitle, activeMap, fetchMaps, setActiveMap, maps, screenTypes
 }) => {
   const {
-    CREATE_REGION, DELETE_REGION, UPDATE_REGION, GET_SCREEN_TYPES, CREATE_SCREEN, DELETE_SCREEN, UPDATE_SCREEN 
+    CREATE_REGION, DELETE_REGION, UPDATE_REGION, CREATE_SCREEN, DELETE_SCREEN, UPDATE_SCREEN 
   } = request;
   const [screens, setScreens] = useState([]);
-  const [selectedRegion, setSelectedRegion] = useState({});
-  const [selectedScreen, setSelectedScreen] = useState({});
-  const [screenTypes, setScreenTypes] = useState([]);
-
-  const [getScreenTypes] = useLazyQuery(GET_SCREEN_TYPES, {
-    onCompleted: (data) => setScreenTypes(data?.InteractiveContentHolderTypes),
-    onError: () => {
-      notification.error({
-        message: 'Error',
-        description: 'Error on getting screens types',
-      });
-    },
-  });
-
-  useEffect(() => {
-    getScreenTypes();
-  }, []);
-
+  const [selectedRegion, setSelectedRegion] = useState();
+  const [selectedScreen, setSelectedScreen] = useState();
+ 
   const regionHandler = () => {
     fetchMaps();
     setDrawerBody(null);
@@ -114,6 +99,10 @@ const MapScreens = ({
       setScreens();
     }
   }, [activeMap, selectedRegion]);
+
+  // useEffect(() => {
+  //   getScreenTypes();
+  // }, [activeMap, selectedRegion, selectedScreen]);
 
   return (
     <>
@@ -222,6 +211,7 @@ const MapScreens = ({
           >
             Add Screen
           </Button>
+          
           {selectedScreen && (
             <Button
               htmlType="submit"
@@ -261,6 +251,7 @@ MapScreens.propTypes = {
   fetchMaps: PropTypes.func,
   setActiveMap: PropTypes.func,
   maps: PropTypes.arrayOf(PropTypes.shape({})),
+  screenTypes: PropTypes.arrayOf(PropTypes.shape({}))
 };
 
 MapScreens.defaultProps = {
@@ -268,6 +259,7 @@ MapScreens.defaultProps = {
   fetchMaps: () => {},
   setActiveMap: () => {},
   maps: [],
+  screenTypes: [],
 };
 
 export default MapScreens;

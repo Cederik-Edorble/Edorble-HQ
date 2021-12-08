@@ -9,6 +9,7 @@ import requestWorld from '../request/worlds';
 import requestMap from '../request/map';
 import requestContentWorld from '../request/contentsWorld';
 import requestResources from '../request/resourses';
+import requestHolder from '../request/contentHolder';
 import MapList from './MapList';
 import MapSettings from './MapSettings';
 import WorldsList from './WorldsList';
@@ -33,6 +34,7 @@ const Dashboard = (props) => {
   const {
     GET_CONTENTS, CREATE_CONTENT, GET_CONTENT_TYPE, DELETE_CONTENT, UPDATE_CONTENT
   } = requestContentWorld;
+  const { GET_SCREEN_TYPES } = requestHolder;
   const { GET_RESOURCES } = requestResources;
   const [showModal, setShowModal] = useState(null);
   const [drawerTitle, setDrawerTitle] = useState();
@@ -47,8 +49,30 @@ const Dashboard = (props) => {
   const [content, setContent] = useState(false);
   const [contentType, setContentType] = useState(false);
   const [resources, setResources] = useState(false);
+  const [screenTypes, setScreenTypes] = useState([]);
 
   const [idMapActive, setIdMapActive] = useState(null);
+
+  const handlerHolder = ({ InteractiveContentHolderTypes }) => {
+    setScreenTypes(InteractiveContentHolderTypes);
+  };
+  
+  const [getScreenTypes] = useLazyQuery(GET_SCREEN_TYPES, {
+    onCompleted: (data) => {
+      console.log('map screen', data);
+      handlerHolder(data); 
+    },
+    onError: () => {
+      notification.error({
+        message: 'Error',
+        description: 'Error on getting screens types',
+      });
+    },
+  });
+
+  useEffect(() => {
+    getScreenTypes();
+  }, [activeMap]);
 
   useEffect(() => {
     setNameWorld(activeWorld?.name);
@@ -387,6 +411,7 @@ const Dashboard = (props) => {
           fetchMaps={fetchMaps}
           setActiveMap={setActiveMap}
           maps={maps}
+          screenTypes={screenTypes}
         />
       )}
 

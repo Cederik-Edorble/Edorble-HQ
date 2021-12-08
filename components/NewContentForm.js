@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Button, Col, Row
 } from 'antd';
@@ -10,7 +10,22 @@ const NewContentForm = ({
   const [url, setUrl] = useState(content?.url ?? '');
   const [title, setTitle] = useState(content?.title ?? '');
   const [description, setDescription] = useState(content?.description ?? '');
-  const [type, setType] = useState(content?.ContentType ?? 'Image');
+  const [type, setType] = useState('Image');
+  const [listTypes, setListTypes] = useState([]);
+
+  useEffect(() => {
+    if (content?.ContentType) {
+      setType(content.ContentType);
+    }
+  }, [content]);
+
+  useEffect(() => {
+    if (contentType) {
+      setListTypes(contentType);
+    }
+  }, [contentType]);
+
+  console.log(contentType);
 
   const submitForm = (e) => {
     e.preventDefault();
@@ -107,7 +122,7 @@ const NewContentForm = ({
                     setType(ev.currentTarget.value);
                   }}
                 >
-                  {contentType && contentType.map((item, index) => (
+                  {listTypes && listTypes?.map((item, index) => (
                     <option
                       value={item.ContentType}
                       key={[item.ContentType, index].join('_')}
