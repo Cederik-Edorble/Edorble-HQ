@@ -7,7 +7,7 @@ const NewScreenForm = ({
 }) => {
   const [name, setName] = useState(activeScreen?.name ?? '');
   const [type, setType] = useState(activeScreen?.InteractiveContentHolderType ?? 'Screen');
-  
+ 
   const create = (e) => {
     e.preventDefault();
     createScreen({
