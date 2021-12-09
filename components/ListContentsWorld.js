@@ -4,7 +4,7 @@ import string from '../constants/strings';
 import styles from '../styles/ListContentsWorld.module.scss';
 import RegionContainer from './RegionContainer';
 
-const ListContentsWorld = ({ addContent, regionContents }) => (
+const ListContentsWorld = ({ addContent, regionContents, clickButton }) => (
   <div className={styles.container}>
     <div className={styles.btnContainer}>
       <Button color="addContent" onClick={addContent}>
@@ -14,8 +14,10 @@ const ListContentsWorld = ({ addContent, regionContents }) => (
     {regionContents && regionContents.map((item, index) => (
       <RegionContainer
         key={[item.region, index].join('_')}
-        label={`Region ${item.region}`}
+        label={`${item.region}`}
         list={item.contents}
+        nameRegion={item.name}
+        clickButton={clickButton}
       />
     ))}
   </div>
@@ -23,12 +25,14 @@ const ListContentsWorld = ({ addContent, regionContents }) => (
 
 ListContentsWorld.propTypes = {
   addContent: PropTypes.func,
-  regionContents: PropTypes.arrayOf(PropTypes.shape({}))
+  regionContents: PropTypes.arrayOf(PropTypes.shape({})),
+  clickButton: PropTypes.func,
 };
 
 ListContentsWorld.defaultProps = {
   addContent: () => {},
   regionContents: [],
+  clickButton: () => {},
 };
 
 export default ListContentsWorld;
