@@ -4,13 +4,13 @@ import TextField from './UI/TextField/TextField';
 import Button from './UI/Button/Button';
 
 const ItemContent = ({
-  contentName, contentType, holderType, textBtn 
+  contentName, contentType, holderType, textBtn, clickButton, idContent, idHolder
 }) => (
   <div className={styles.container}>
     <TextField text={contentName} styleType="itemText" />
     <TextField text={contentType} styleType="itemText" />
     <TextField text={holderType} styleType="itemText" />
-    <Button color="removeContent">
+    <Button color="removeContent" onClick={() => clickButton({ idContent, idHolder })}>
       {textBtn}
     </Button>
   </div>
@@ -21,6 +21,10 @@ ItemContent.propTypes = {
   contentType: PropTypes.string,
   holderType: PropTypes.string,
   textBtn: PropTypes.string,
+  clickButton: PropTypes.func,
+  idContent: PropTypes.number.isRequired,
+  idHolder: PropTypes.number.isRequired,
+
 };
 
 ItemContent.defaultProps = {
@@ -28,6 +32,7 @@ ItemContent.defaultProps = {
   contentType: '',
   holderType: '',
   textBtn: '',
+  clickButton: () => {},
 };
 
 export default ItemContent;

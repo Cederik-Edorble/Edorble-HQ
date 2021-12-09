@@ -25,8 +25,6 @@ const NewContentForm = ({
     }
   }, [contentType]);
 
-  console.log(contentType);
-
   const submitForm = (e) => {
     e.preventDefault();
     if (content && content?.id) {

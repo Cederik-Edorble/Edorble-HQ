@@ -100,10 +100,6 @@ const MapScreens = ({
     }
   }, [activeMap, selectedRegion]);
 
-  // useEffect(() => {
-  //   getScreenTypes();
-  // }, [activeMap, selectedRegion, selectedScreen]);
-
   return (
     <>
       <div className="col-span-12 p-2 mb-5 flex justify-center">
@@ -196,7 +192,7 @@ const MapScreens = ({
             type="primary"
             ghost
             onClick={() => {
-              setDrawerTitle(<DrawerTitle text="New Screen" />);
+              setDrawerTitle(<DrawerTitle text="New Content Holder" />);
               setDrawerBody(
                 <NewScreenForm
                   screenTypes={screenTypes}
@@ -209,7 +205,7 @@ const MapScreens = ({
             className="rounded font-bold  mr-2"
             icon={<i className="fa fa-plus mr-2" />}
           >
-            Add Screen
+            Add Content Holder
           </Button>
           
           {selectedScreen && (
@@ -218,7 +214,7 @@ const MapScreens = ({
               type="primary"
               ghost
               onClick={() => {
-                setDrawerTitle(<DrawerTitle text="Edit Screen" />);
+                setDrawerTitle(<DrawerTitle text="Edit Content Holder" />);
                 setDrawerBody(
                   <NewScreenForm
                     screenTypes={screenTypes}
@@ -232,7 +228,7 @@ const MapScreens = ({
               className="rounded font-bold"
               icon={<i className="fa fa-edit cursor-pointer mr-2" />}
             >
-              Edit
+              Edit Content Holder 
             </Button>
           )}
         </div>

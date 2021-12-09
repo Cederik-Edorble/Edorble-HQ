@@ -4,4 +4,11 @@
   flex-direction: column;
   margin: 10px 0;
   padding: 10px;
+
+  .boxTitle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
 }

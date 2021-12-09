@@ -10,6 +10,7 @@ import requestMap from '../request/map';
 import requestContentWorld from '../request/contentsWorld';
 import requestResources from '../request/resourses';
 import requestHolder from '../request/contentHolder';
+import requestMapping from '../request/contentMappings';
 import MapList from './MapList';
 import MapSettings from './MapSettings';
 import WorldsList from './WorldsList';
@@ -36,6 +37,9 @@ const Dashboard = (props) => {
   } = requestContentWorld;
   const { GET_SCREEN_TYPES } = requestHolder;
   const { GET_RESOURCES } = requestResources;
+  const {
+    GET_REGIONS_HOLDERS, CREATE_CONTENT_MAPPINGS, REMOVE_CONTENT_MAPPINGS, UPDATE_CONTENT_MAPPINGS 
+  } = requestMapping;
   const [showModal, setShowModal] = useState(null);
   const [drawerTitle, setDrawerTitle] = useState();
   const [worlds, setWorlds] = useState(null);
@@ -50,16 +54,26 @@ const Dashboard = (props) => {
   const [contentType, setContentType] = useState(false);
   const [resources, setResources] = useState(false);
   const [screenTypes, setScreenTypes] = useState([]);
+  const [regions, setRegions] = useState([]);
 
   const [idMapActive, setIdMapActive] = useState(null);
-
+  const [idWorldActive, setIdWorldActive] = useState(null);
+  
+  useEffect(() => {
+    setIdMapActive(activeMap?.id);
+    setIdWorldActive(activeWorld?.id);
+  }, [activeMap, activeWorld]);
+  
   const handlerHolder = ({ InteractiveContentHolderTypes }) => {
     setScreenTypes(InteractiveContentHolderTypes);
+  };
+
+  const handlerRegions = ({ Regions }) => {
+    setRegions(Regions);
   };
   
   const [getScreenTypes] = useLazyQuery(GET_SCREEN_TYPES, {
     onCompleted: (data) => {
-      console.log('map screen', data);
       handlerHolder(data); 
     },
     onError: () => {
@@ -70,12 +84,30 @@ const Dashboard = (props) => {
     },
   });
 
+  const [getRegions] = useLazyQuery(GET_REGIONS_HOLDERS, {
+    onCompleted: (data) => handlerRegions(data),
+    
+    onError: () => {
+      notification.error({
+        message: 'Error',
+        description: 'Error on getting regions',
+      });
+    },
+  });
+
   useEffect(() => {
     getScreenTypes();
   }, [activeMap]);
 
   useEffect(() => {
-    setNameWorld(activeWorld?.name);
+    if (activeWorld) {
+      getRegions({
+        variables: {
+          _eq: activeWorld.mapID
+        }
+      });
+      setNameWorld(activeWorld?.name);
+    }
   }, [activeWorld]);
   
   const nameHandler = (event) => {
@@ -320,6 +352,78 @@ const Dashboard = (props) => {
       setEditName(false);
     }
   };
+
+  useEffect(() => {
+    if (worlds) {
+      const indexItem = findIndexItem(worlds, 'id', idWorldActive);
+      if (indexItem !== -1) {
+        setActiveWorld(worlds[indexItem]);
+      }
+    }
+  }, [worlds]);
+
+  // eslint-disable-next-line camelcase
+  const mappingHolderHandler = ({ insert_WorldMapInteractiveContentHolderContentMapping }) => {
+    const idWorldReturn = insert_WorldMapInteractiveContentHolderContentMapping.returning[0].WorldID;
+    setIdWorldActive(idWorldReturn);
+    fetchWorlds();
+    setShowModal(null);
+    notification.success({
+      message: 'Add Content Success',
+    });
+  };
+
+  // eslint-disable-next-line camelcase
+  const mappingUpdateHolderHandler = ({ update_WorldMapInteractiveContentHolderContentMapping }) => {
+    const idWorldReturn = update_WorldMapInteractiveContentHolderContentMapping.returning[0].WorldID;
+    setIdWorldActive(idWorldReturn);
+    fetchWorlds();
+    setShowModal(null);
+    notification.success({
+      message: 'Update Content Success',
+    });
+  };
+
+  // eslint-disable-next-line camelcase
+  const mappingDeleteHolderHandler = ({ delete_WorldMapInteractiveContentHolderContentMapping }) => {
+    const idWorldReturn = delete_WorldMapInteractiveContentHolderContentMapping.returning[0].WorldID;
+    setIdWorldActive(idWorldReturn);
+    fetchWorlds();
+    setShowModal(null);
+    notification.success({
+      message: 'Remove Content Success',
+    });
+  };
+
+  const [addContentMapping] = useMutation(CREATE_CONTENT_MAPPINGS, {
+    onCompleted: (data) => mappingHolderHandler(data),
+    onError: () => {
+      notification.error({
+        message: 'Update Error',
+        description: 'Error on added content in mapping',
+      });
+    },
+  });
+
+  const [updateContentMapping] = useMutation(UPDATE_CONTENT_MAPPINGS, {
+    onCompleted: (data) => mappingUpdateHolderHandler(data),
+    onError: () => {
+      notification.error({
+        message: 'Update Error',
+        description: 'Error on update content in mapping, choose another holder or content or create new holder in map',
+      });
+    },
+  });
+
+  const [removeContentMapping] = useMutation(REMOVE_CONTENT_MAPPINGS, {
+    onCompleted: (data) => mappingDeleteHolderHandler(data),
+    onError: () => {
+      notification.error({
+        message: 'Update Error',
+        description: 'Error on remove content in mapping',
+      });
+    },
+  });
  
   useEffect(() => {
     const ownerId = +localStorage.getItem('userId');
@@ -377,6 +481,11 @@ const Dashboard = (props) => {
             activeWorld={activeWorld}
             setDrawerBody={setShowModal}
             setDrawerTitle={setDrawerTitle}
+            regions={regions}
+            content={content}
+            addContentMapping={addContentMapping}
+            removeContentMapping={removeContentMapping}
+            updateContentMapping={updateContentMapping}
           />
         </div>
       )}

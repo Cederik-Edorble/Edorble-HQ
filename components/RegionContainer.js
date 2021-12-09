@@ -3,16 +3,24 @@ import styles from '../styles/RegionContainer.module.scss';
 import ItemContent from './ItemContent';
 import TextField from './UI/TextField/TextField';
 
-const RegionContainer = ({ list, label }) => (
+const RegionContainer = ({
+  list, label, nameRegion, clickButton 
+}) => (
   <div className={styles.container}>
-    <TextField styleType="textTitleContent" text={label} />
+    <div className={styles.boxTitle}>
+      <TextField styleType="textTitleContent" text={`Region ${nameRegion}`} />
+      <TextField styleType="textTitleContent" text={`id${label}`} />
+    </div> 
     {list && list.map((item, index) => (
       <ItemContent
         key={[item.Content.title, index].join('_')}
         contentName={item.Content.title}
         contentType={item.Content.ContentType}
         holderType={item.InteractiveContentHolder.InteractiveContentHolderType}
-        textBtn="remove"
+        textBtn="edit"
+        clickButton={clickButton}
+        idContent={item.Content.id}
+        idHolder={item.InteractiveContentHolder.id}
       />
     ))}
   </div>
@@ -21,12 +29,16 @@ const RegionContainer = ({ list, label }) => (
 RegionContainer.propTypes = {
   list: PropTypes.arrayOf(PropTypes.shape({})),
   label: PropTypes.string,
+  nameRegion: PropTypes.string,
+  clickButton: PropTypes.func,
 };
 
 RegionContainer.defaultProps = {
   list: [],
-  label: ''
-
+  label: '',
+  nameRegion: '',
+  clickButton: () => {},
+  idRegion: 0,
 };
 
 export default RegionContainer;
