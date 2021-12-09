@@ -27,6 +27,16 @@ const request = {
             ContentType
           }
         }
+        WorldParametersConfiguration {
+          FlySpeed
+          Is_SpatialAudioMode
+          PasswordHash
+          ResourceID
+          RunSpeed
+          id
+          WalkPercentage
+          AvatarTalkingIcon
+        }
       }
     }
   `,
@@ -56,6 +66,16 @@ const request = {
               ResourceID
               ContentType
             }
+          }
+          WorldParametersConfiguration {
+            FlySpeed
+            Is_SpatialAudioMode
+            PasswordHash
+            ResourceID
+            RunSpeed
+            id
+            WalkPercentage
+            AvatarTalkingIcon
           }
         }
       }
@@ -87,6 +107,16 @@ const request = {
               ResourceID
               ContentType
             }
+          }
+          WorldParametersConfiguration {
+            FlySpeed
+            Is_SpatialAudioMode
+            PasswordHash
+            ResourceID
+            RunSpeed
+            id
+            WalkPercentage
+            AvatarTalkingIcon
           }
         }
       }

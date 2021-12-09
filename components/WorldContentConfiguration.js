@@ -5,6 +5,7 @@ import styles from '../styles/WorldContentConfiguration.module.scss';
 import TextField from './UI/TextField/TextField';
 import DrawerTitle from './DrawerTitle';
 import AddContentInWorldForm from './AddContentInWorldForm';
+import ConfigurationPanel from './ConfigurationPanel';
 
 const WorldContentConfiguration = ({
   activeWorld,
@@ -102,9 +103,7 @@ const WorldContentConfiguration = ({
     <div className={styles.container}>
       <TextField styleType="titleWorldSetting" text={activeWorld.name} />
       <div className={styles.content}>
-        <div className={styles.configurationPanel}>
-          Configuration World panel
-        </div>
+        <ConfigurationPanel activeWorld={activeWorld} />
         <ListContentsWorld
           listContents={activeWorld.WorldMapInteractiveContentHolderContentMappings}
           addContent={addContent}
