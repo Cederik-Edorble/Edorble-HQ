@@ -19,8 +19,40 @@ const WorldsSettings = ({
   editTitleHandler,
   maps,
   updateWorld,
+  updateParametersConfiguration,
+  createParametersConfiguration,
 }) => {
   const [enableEdit, setEnableEdit] = useState(false);
+
+  const savePassword = (event) => {
+    event.preventDefault();
+    const params = activeWorld?.WorldParametersConfiguration;
+    if (params?.id !== 1) {
+      updateParametersConfiguration({
+        variables: {
+          _eq: params.id,
+          AvatarTalkingIcon: params.AvatarTalkingIcon, 
+          FlySpeed: params.FlySpeed, 
+          Is_SpatialAudioMode: params.Is_SpatialAudioMode, 
+          PasswordHash: password,  
+          RunSpeed: params.RunSpeed, 
+          WalkPercentage: params.WalkPercentage,
+        }
+      });
+    } else {
+      createParametersConfiguration({
+        variables: {
+          AvatarTalkingIcon: params.AvatarTalkingIcon, 
+          FlySpeed: params.FlySpeed, 
+          Is_SpatialAudioMode: params.Is_SpatialAudioMode, 
+          PasswordHash: password,  
+          RunSpeed: params.RunSpeed, 
+          WalkPercentage: params.WalkPercentage,
+          ResourceID: 30, 
+        }
+      });
+    }
+  };
  
   return (
     <div className="grid col-span-12">
@@ -96,7 +128,7 @@ const WorldsSettings = ({
             </div>
             {enableEdit && (
               <div className="col-span-12 gap-2 justify-center">
-                <form>
+                <form onSubmit={savePassword}>
                   <Row type="flex" align="center" className="mt-5 w-full">
                     <Col span={24} className="mt-5">
                       <input
@@ -162,6 +194,7 @@ WorldsSettings.propTypes = {
     name: PropTypes.string,
     accessCode: PropTypes.number,
     enablePassword: PropTypes.bool,
+    WorldParametersConfiguration: PropTypes.shape({}),
   }).isRequired,
   password: PropTypes.string.isRequired,
   retypePassword: PropTypes.string.isRequired,
@@ -173,11 +206,14 @@ WorldsSettings.propTypes = {
   editTitleHandler: PropTypes.func,
   maps: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   updateWorld: PropTypes.func.isRequired, 
+  updateParametersConfiguration: PropTypes.func.isRequired,
+  createParametersConfiguration: PropTypes.func.isRequired,
 };
 WorldsSettings.defaultProps = {
   nameHandler: () => {},
   nameWorld: '',
   editName: false,
   editTitleHandler: () => {},
+
 };
 export default WorldsSettings;

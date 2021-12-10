@@ -7,4 +7,26 @@
   line-height: 2.5rem;
   font-weight: 700;
   padding: 0;
+
+  &::placeholder {
+    color: #898989;
+    text-transform: capitalize;
+  }
+
+  &:-ms-input-placeholder {
+    color: #898989;
+  }
+
+  &::-ms-input-placeholder {
+    color: #898989;
+  }
+  &:focus {
+    outline: none !important;
+    -webkit-appearance:none !important;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0) !important;
+    -webkit-appearance: none !important;
+  }
+  &:hover {
+    cursor: pointer;
+  }
 }
