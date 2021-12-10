@@ -15,10 +15,12 @@ const WorldContentConfiguration = ({
   content,
   addContentMapping,
   removeContentMapping,
-  updateContentMapping 
+  updateContentMapping,
+  createParametersConfiguration, 
+  updateParametersConfiguration,
 }) => {
   const [regionContents, setRegionContents] = useState();
-
+ 
   const filterArrayMap = (contents) => contents.filter((item) => item.MapID === activeWorld.mapID);
 
   const getRegions = (array) => {
@@ -103,7 +105,11 @@ const WorldContentConfiguration = ({
     <div className={styles.container}>
       <TextField styleType="titleWorldSetting" text={activeWorld.name} />
       <div className={styles.content}>
-        <ConfigurationPanel activeWorld={activeWorld} />
+        <ConfigurationPanel
+          activeWorld={activeWorld}
+          createParametersConfiguration={createParametersConfiguration}
+          updateParametersConfiguration={updateParametersConfiguration}
+        />
         <ListContentsWorld
           listContents={activeWorld.WorldMapInteractiveContentHolderContentMappings}
           addContent={addContent}
@@ -129,6 +135,8 @@ WorldContentConfiguration.propTypes = {
   addContentMapping: PropTypes.func,
   removeContentMapping: PropTypes.func,
   updateContentMapping: PropTypes.func,
+  createParametersConfiguration: PropTypes.func,
+  updateParametersConfiguration: PropTypes.func,
 };
 
 WorldContentConfiguration.defaultProps = {
@@ -138,6 +146,8 @@ WorldContentConfiguration.defaultProps = {
   addContentMapping: () => {},
   removeContentMapping: () => {},
   updateContentMapping: () => {},
+  createParametersConfiguration: () => {},
+  updateParametersConfiguration: () => {},
 };
 
 export default WorldContentConfiguration;

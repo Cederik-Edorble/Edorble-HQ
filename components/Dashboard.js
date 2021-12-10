@@ -11,6 +11,7 @@ import requestContentWorld from '../request/contentsWorld';
 import requestResources from '../request/resourses';
 import requestHolder from '../request/contentHolder';
 import requestMapping from '../request/contentMappings';
+import requestWorldConfiguration from '../request/worldParametersConfiguration';
 import MapList from './MapList';
 import MapSettings from './MapSettings';
 import WorldsList from './WorldsList';
@@ -40,6 +41,7 @@ const Dashboard = (props) => {
   const {
     GET_REGIONS_HOLDERS, CREATE_CONTENT_MAPPINGS, REMOVE_CONTENT_MAPPINGS, UPDATE_CONTENT_MAPPINGS 
   } = requestMapping;
+  const { INSERT_PARAMS, UPDATE_WORLD_PARAMS, UPDATE_PARAMS } = requestWorldConfiguration;
   const [showModal, setShowModal] = useState(null);
   const [drawerTitle, setDrawerTitle] = useState();
   const [worlds, setWorlds] = useState(null);
@@ -50,7 +52,7 @@ const Dashboard = (props) => {
   const [nameWorld, setNameWorld] = useState(activeWorld?.name ? activeWorld?.name : '');
   const [editName, setEditName] = useState(false);
 
-  const [content, setContent] = useState(false);
+  const [content, setContent] = useState([]);
   const [contentType, setContentType] = useState(false);
   const [resources, setResources] = useState(false);
   const [screenTypes, setScreenTypes] = useState([]);
@@ -424,6 +426,71 @@ const Dashboard = (props) => {
       });
     },
   });
+
+  // eslint-disable-next-line camelcase
+  const handlerUpdateConfig = ({ update_Worlds }) => {
+    const { id } = update_Worlds.returning[0];
+    setIdWorldActive(id);
+    fetchWorlds();
+    notification.success({
+      message: 'Update World`s Configuration  Success',
+    });
+  };
+
+  const [updateWorldConfig] = useMutation(UPDATE_WORLD_PARAMS, {
+    onCompleted: (data) => handlerUpdateConfig(data),
+    onError: () => {
+      notification.error({
+        message: 'Update Error',
+        description: 'Error on update config in world',
+      });
+    },
+  });
+  
+  // eslint-disable-next-line camelcase
+  const handlerCreateParam = ({ insert_WorldParametersConfigurations }) => {
+    const { id } = insert_WorldParametersConfigurations.returning[0];
+    updateWorldConfig({
+      variables: {
+        _eq: idWorldActive,
+        WorldParametersConfigurationID: id,
+      }
+    });
+  };
+
+  const [createParametersConfiguration] = useMutation(INSERT_PARAMS, {
+    onCompleted: (data) => handlerCreateParam(data),
+    onError: () => {
+      notification.error({
+        message: 'Update Error',
+        description: 'Error on create configuration',
+      });
+    },
+  });
+
+  const handlerUpdateParams = () => {
+    fetchWorlds();
+    notification.success({
+      message: 'Update World`s Configuration  Success',
+    });
+  };
+
+  const [updateParametersConfiguration] = useMutation(UPDATE_PARAMS, {
+    onCompleted: () => handlerUpdateParams(),
+    onError: () => {
+      notification.error({
+        message: 'Update Error',
+        description: 'Error on update configuration',
+      });
+    },
+  });
+
+  useEffect(() => {
+    const params = activeWorld?.WorldParametersConfiguration;
+    if (params) {
+      setPassword(params.PasswordHash);
+    }
+  }, [activeWorld]);
  
   useEffect(() => {
     const ownerId = +localStorage.getItem('userId');
@@ -472,6 +539,7 @@ const Dashboard = (props) => {
           nameWorld={nameWorld}
           editTitleHandler={editTitleHandler}
           editName={editName}
+          updateParametersConfiguration={updateParametersConfiguration}
         />
       )}
 
@@ -486,6 +554,8 @@ const Dashboard = (props) => {
             addContentMapping={addContentMapping}
             removeContentMapping={removeContentMapping}
             updateContentMapping={updateContentMapping}
+            createParametersConfiguration={createParametersConfiguration}
+            updateParametersConfiguration={updateParametersConfiguration}
           />
         </div>
       )}
@@ -547,6 +617,7 @@ Dashboard.propTypes = {
     accessCode: PropTypes.number,
     enablePassword: PropTypes.bool,
     mapID: PropTypes.number,
+    WorldParametersConfiguration: PropTypes.shape({}),
     WorldMapInteractiveContentHolderContentMappings: PropTypes.arrayOf(PropTypes.shape({}))
   }),
   activeMap: PropTypes.shape({
