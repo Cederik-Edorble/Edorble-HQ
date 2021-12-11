@@ -489,6 +489,7 @@ const Dashboard = (props) => {
     const params = activeWorld?.WorldParametersConfiguration;
     if (params) {
       setPassword(params.PasswordHash);
+      setRetypePassword(params.PasswordHash);
     }
   }, [activeWorld]);
  
@@ -540,6 +541,7 @@ const Dashboard = (props) => {
           editTitleHandler={editTitleHandler}
           editName={editName}
           updateParametersConfiguration={updateParametersConfiguration}
+          createParametersConfiguration={createParametersConfiguration}
         />
       )}
 

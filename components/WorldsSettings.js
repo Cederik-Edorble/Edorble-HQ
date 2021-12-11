@@ -53,6 +53,21 @@ const WorldsSettings = ({
       });
     }
   };
+
+  const disablePassword = () => {
+    const params = activeWorld?.WorldParametersConfiguration;
+    updateParametersConfiguration({
+      variables: {
+        _eq: params.id,
+        AvatarTalkingIcon: params.AvatarTalkingIcon, 
+        FlySpeed: params.FlySpeed, 
+        Is_SpatialAudioMode: params.Is_SpatialAudioMode, 
+        PasswordHash: '',  
+        RunSpeed: params.RunSpeed, 
+        WalkPercentage: params.WalkPercentage,
+      }
+    });
+  };
  
   return (
     <div className="grid col-span-12">
@@ -104,15 +119,16 @@ const WorldsSettings = ({
               <p className="text-edorble-400 font-semibold text-2xl">
                 Password
               </p>
-              {activeWorld.enablePassword && (
+              {activeWorld.WorldParametersConfiguration.PasswordHash && (
                 <Tooltip title="Disable Password">
                   <i
+                    onClick={disablePassword}
                     className="fa fa-toggle-on text-2xl text-edorble-400 cursor-pointer"
                     role="presentation"
                   />
                 </Tooltip>
               )}
-              {!activeWorld.enablePassword && (
+              {!activeWorld.WorldParametersConfiguration.PasswordHash && (
                 <Tooltip title="Enable Password">
                   <i
                     className="fa fa-toggle-off text-2xl text-edorble-400 cursor-pointer"
@@ -194,7 +210,9 @@ WorldsSettings.propTypes = {
     name: PropTypes.string,
     accessCode: PropTypes.number,
     enablePassword: PropTypes.bool,
-    WorldParametersConfiguration: PropTypes.shape({}),
+    WorldParametersConfiguration: PropTypes.shape({
+      PasswordHash: PropTypes.string,
+    }),
   }).isRequired,
   password: PropTypes.string.isRequired,
   retypePassword: PropTypes.string.isRequired,
