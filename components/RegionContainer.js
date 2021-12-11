@@ -8,7 +8,7 @@ const RegionContainer = ({
 }) => (
   <div className={styles.container}>
     <div className={styles.boxTitle}>
-      <TextField styleType="textTitleContent" text={`Region ${nameRegion}`} />
+      <TextField styleType="textTitleContent" text={`Region: ${nameRegion}`} />
       <TextField styleType="textTitleContent" text={`id${label}`} />
     </div> 
     {list && list.map((item, index) => (
@@ -38,7 +38,6 @@ RegionContainer.defaultProps = {
   label: '',
   nameRegion: '',
   clickButton: () => {},
-  idRegion: 0,
 };
 
 export default RegionContainer;

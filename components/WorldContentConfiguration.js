@@ -39,8 +39,8 @@ const WorldContentConfiguration = ({
   );
 
   const getName = (idRegion, array) => {
-    const getItem = array.filter((item) => item.InteractiveContentHolder.RegionID === idRegion);
-    return getItem.length > 0 ? getItem[0].InteractiveContentHolder.name : ' ';
+    const getItem = array.filter((item) => item.id === idRegion);
+    return getItem.length > 0 ? getItem[0].name : ' ';
   };
 
   const getContents = (regionArray, array) => {
@@ -48,7 +48,7 @@ const WorldContentConfiguration = ({
     regionArray.forEach((item) => {
       const newObject = {
         region: item,
-        name: getName(item, array),
+        name: getName(item, regions),
         contents: contentsForRegion(item, array)
       };
       newArrayContent.push(newObject);
