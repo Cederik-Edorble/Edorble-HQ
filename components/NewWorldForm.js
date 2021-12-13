@@ -16,7 +16,8 @@ const NewWorldForm = ({
           name,
           defaultLogoURL: `${defaultLogo}`,
           mapID: 1,
-          WorldParameters_ID: 1
+          WorldParametersConfigurationID: 1,
+          ResourceID: 1
         },
       },
     });
