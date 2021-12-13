@@ -6,6 +6,7 @@ import {
 import Input from './Input';
 import MapSelector from './MapSelector';
 import styles from '../styles/WorldSetting.module.scss';
+import ConfigurationPanel from './ConfigurationPanel';
 
 const WorldsSettings = ({
   activeWorld,
@@ -113,6 +114,13 @@ const WorldsSettings = ({
                 />
               </div>
             </div>
+          </div>
+          <div>
+            <ConfigurationPanel
+              activeWorld={activeWorld}
+              createParametersConfiguration={createParametersConfiguration}
+              updateParametersConfiguration={updateParametersConfiguration}
+            />
           </div>
           <div className="grid grid-cols-12 gap-2 p-5 border border-edorble-100 rounded">
             <div className="col-span-12 gap-2 justify-center">

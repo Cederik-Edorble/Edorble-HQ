@@ -5,7 +5,6 @@ import styles from '../styles/WorldContentConfiguration.module.scss';
 import TextField from './UI/TextField/TextField';
 import DrawerTitle from './DrawerTitle';
 import AddContentInWorldForm from './AddContentInWorldForm';
-import ConfigurationPanel from './ConfigurationPanel';
 
 const WorldContentConfiguration = ({
   activeWorld,
@@ -16,8 +15,6 @@ const WorldContentConfiguration = ({
   addContentMapping,
   removeContentMapping,
   updateContentMapping,
-  createParametersConfiguration, 
-  updateParametersConfiguration,
 }) => {
   const [regionContents, setRegionContents] = useState();
  
@@ -105,11 +102,6 @@ const WorldContentConfiguration = ({
     <div className={styles.container}>
       <TextField styleType="titleWorldSetting" text={activeWorld.name} />
       <div className={styles.content}>
-        <ConfigurationPanel
-          activeWorld={activeWorld}
-          createParametersConfiguration={createParametersConfiguration}
-          updateParametersConfiguration={updateParametersConfiguration}
-        />
         <ListContentsWorld
           listContents={activeWorld.WorldMapInteractiveContentHolderContentMappings}
           addContent={addContent}
@@ -135,8 +127,6 @@ WorldContentConfiguration.propTypes = {
   addContentMapping: PropTypes.func,
   removeContentMapping: PropTypes.func,
   updateContentMapping: PropTypes.func,
-  createParametersConfiguration: PropTypes.func,
-  updateParametersConfiguration: PropTypes.func,
 };
 
 WorldContentConfiguration.defaultProps = {
@@ -146,8 +136,6 @@ WorldContentConfiguration.defaultProps = {
   addContentMapping: () => {},
   removeContentMapping: () => {},
   updateContentMapping: () => {},
-  createParametersConfiguration: () => {},
-  updateParametersConfiguration: () => {},
 };
 
 export default WorldContentConfiguration;

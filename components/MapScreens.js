@@ -197,7 +197,6 @@ const MapScreens = ({
                 <NewScreenForm
                   screenTypes={screenTypes}
                   activeRegion={selectedRegion}
-                  activeScreen={selectedScreen}
                   createScreen={createScreen}
                 />
               );

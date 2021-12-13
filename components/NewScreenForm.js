@@ -7,7 +7,7 @@ const NewScreenForm = ({
 }) => {
   const [name, setName] = useState(activeScreen?.name ?? '');
   const [type, setType] = useState(activeScreen?.InteractiveContentHolderType ?? 'Screen');
- 
+
   const create = (e) => {
     e.preventDefault();
     createScreen({
@@ -45,7 +45,7 @@ const NewScreenForm = ({
   return (
     <div className="grid grid-cols-12">
       <div className="col-span-12">
-        <form onSubmit={activeScreen ? update : create}>
+        <form onSubmit={Object.keys(activeScreen).length > 0 ? update : create}>
           <Row type="flex" align="center" className="mt-5">
             <Col span={24}>
               <input
@@ -60,7 +60,7 @@ const NewScreenForm = ({
                     hover:border-edorble-200
                     focus:border-edorble-200
                     w-full rounded"
-                placeholder="Screen Name"
+                placeholder="Holder Name"
               />
             </Col>
             <Col span={24} className="mt-5">
