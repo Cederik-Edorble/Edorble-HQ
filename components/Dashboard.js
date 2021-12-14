@@ -593,6 +593,7 @@ const Dashboard = (props) => {
           setActiveMap={setActiveMap}
           maps={maps}
           screenTypes={screenTypes}
+          fetchContent={fetchContent}
         />
       )}
 
