@@ -28,6 +28,7 @@ const request = {
           }
         }
         WorldParametersConfiguration {
+          PushToTalk
           FlySpeed
           Is_SpatialAudioMode
           PasswordHash
@@ -68,6 +69,7 @@ const request = {
             }
           }
           WorldParametersConfiguration {
+            PushToTalk
             FlySpeed
             Is_SpatialAudioMode
             PasswordHash
@@ -109,6 +111,7 @@ const request = {
             }
           }
           WorldParametersConfiguration {
+            PushToTalk
             FlySpeed
             Is_SpatialAudioMode
             PasswordHash

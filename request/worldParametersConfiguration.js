@@ -9,7 +9,8 @@ const request = {
       $PasswordHash: String, 
       $ResourceID: bigint, 
       $RunSpeed: numeric, 
-      $WalkPercentage: numeric) {
+      $WalkPercentage: numeric,
+      $PushToTalk: Boolean) {
       insert_WorldParametersConfigurations(
         objects: {
           AvatarTalkingIcon: $AvatarTalkingIcon, 
@@ -18,7 +19,9 @@ const request = {
           PasswordHash: $PasswordHash, 
           ResourceID: $ResourceID, 
           RunSpeed: $RunSpeed, 
-          WalkPercentage: $WalkPercentage}, 
+          WalkPercentage: $WalkPercentage,
+          PushToTalk: $PushToTalk,
+          }, 
         on_conflict: {
           constraint: WorldParameters_pkey, 
           update_columns: id}) {
@@ -50,7 +53,8 @@ const request = {
       $Is_SpatialAudioMode: Boolean, 
       $PasswordHash: String, 
       $RunSpeed: numeric, 
-      $WalkPercentage: numeric) {
+      $WalkPercentage: numeric,
+      $PushToTalk: Boolean) {
       update_WorldParametersConfigurations(
         where: {id: {_eq: $_eq}}, 
         _set: {
@@ -59,7 +63,9 @@ const request = {
           Is_SpatialAudioMode: $Is_SpatialAudioMode, 
           PasswordHash: $PasswordHash, 
           RunSpeed: $RunSpeed, 
-          WalkPercentage: $WalkPercentage}) {
+          WalkPercentage: $WalkPercentage,
+          PushToTalk: $PushToTalk
+          }) {
         returning {
           id
         }
