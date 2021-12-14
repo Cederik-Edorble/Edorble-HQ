@@ -17,6 +17,10 @@ const MapScreens = ({
   const [screens, setScreens] = useState([]);
   const [selectedRegion, setSelectedRegion] = useState();
   const [selectedScreen, setSelectedScreen] = useState();
+
+  useEffect(() => {
+    fetchContent();
+  }, []);
  
   const regionHandler = () => {
     fetchMaps();

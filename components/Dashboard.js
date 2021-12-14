@@ -607,6 +607,8 @@ const Dashboard = (props) => {
         resources={resources}
         deleteContent={deleteContent}
         updateContentItem={updateContentItem}
+        fetchContent={fetchContent}
+        fetchContentType={fetchContentType}
       />
       )}
     </>
