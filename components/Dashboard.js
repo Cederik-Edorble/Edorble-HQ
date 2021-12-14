@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
   Drawer, notification
 } from 'antd';
-import { useLazyQuery, useMutation } from '@apollo/client';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import PropTypes from 'prop-types';
 import WorldContentConfiguration from './WorldContentConfiguration';
 import requestWorld from '../request/worlds';
@@ -88,7 +88,7 @@ const Dashboard = (props) => {
 
   const [getRegions] = useLazyQuery(GET_REGIONS_HOLDERS, {
     onCompleted: (data) => handlerRegions(data),
-    
+    fetchPolicy: 'network-only',
     onError: () => {
       notification.error({
         message: 'Error',
@@ -97,9 +97,26 @@ const Dashboard = (props) => {
     },
   });
 
+  const regionQuery = useQuery(GET_REGIONS_HOLDERS, {
+    variables: {
+      _eq: activeWorld?.mapID
+    },
+    fetchPolicy: 'network-only',
+  });
+
   useEffect(() => {
-    getScreenTypes();
-  }, [activeMap]);
+    if (regionQuery?.data) {
+      handlerRegions(regionQuery.data);
+    }
+  }, [regionQuery]);
+
+  useEffect(() => {
+    regionQuery.refetch({
+      variables: {
+        _eq: activeWorld?.mapID
+      },
+    });
+  }, [activeWorld]);
 
   useEffect(() => {
     if (activeWorld) {
@@ -110,7 +127,7 @@ const Dashboard = (props) => {
       });
       setNameWorld(activeWorld?.name);
     }
-  }, [activeWorld]);
+  }, [activeWorld, activeMap, activeTab]);
   
   const nameHandler = (event) => {
     setNameWorld(event.target.value);
@@ -262,6 +279,7 @@ const Dashboard = (props) => {
 
   const [fetchContent] = useLazyQuery(GET_CONTENTS, {
     onCompleted: (data) => getContentHandler(data),
+    fetchPolicy: 'network-only',
     onError: () => {
       notification.error({
         message: 'Error',
@@ -272,6 +290,7 @@ const Dashboard = (props) => {
 
   const [fetchContentType] = useLazyQuery(GET_CONTENT_TYPE, {
     onCompleted: (data) => getContentTypeHandler(data),
+    fetchPolicy: 'network-only',
     onError: () => {
       notification.error({
         message: 'Error',
@@ -282,6 +301,7 @@ const Dashboard = (props) => {
 
   const [fetchResources] = useLazyQuery(GET_RESOURCES, {
     onCompleted: (data) => getResourcesHandler(data),
+    fetchPolicy: 'network-only',
     onError: () => {
       notification.error({
         message: 'Error',
@@ -492,6 +512,10 @@ const Dashboard = (props) => {
       setRetypePassword(params.PasswordHash);
     }
   }, [activeWorld]);
+
+  useEffect(() => {
+    getScreenTypes();
+  }, [activeMap]);
  
   useEffect(() => {
     const ownerId = +localStorage.getItem('userId');
@@ -592,6 +616,7 @@ const Dashboard = (props) => {
           maps={maps}
           screenTypes={screenTypes}
           fetchContent={fetchContent}
+          fetchWorlds={fetchWorlds}
         />
       )}
 

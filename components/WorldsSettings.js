@@ -225,8 +225,8 @@ WorldsSettings.propTypes = {
       PasswordHash: PropTypes.string,
     }),
   }).isRequired,
-  password: PropTypes.string.isRequired,
-  retypePassword: PropTypes.string.isRequired,
+  password: PropTypes.string,
+  retypePassword: PropTypes.string,
   setPassword: PropTypes.func.isRequired,
   setRetypePassword: PropTypes.func.isRequired,
   nameHandler: PropTypes.func,
@@ -243,6 +243,8 @@ WorldsSettings.defaultProps = {
   nameWorld: '',
   editName: false,
   editTitleHandler: () => {},
+  password: '',
+  retypePassword: '',
 
 };
 export default WorldsSettings;
