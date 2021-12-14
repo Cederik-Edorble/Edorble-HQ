@@ -38,6 +38,7 @@ const WorldsSettings = ({
           PasswordHash: password,  
           RunSpeed: params.RunSpeed, 
           WalkPercentage: params.WalkPercentage,
+          PushToTalk: params.PushToTalk,
         }
       });
     } else {
@@ -49,7 +50,8 @@ const WorldsSettings = ({
           PasswordHash: password,  
           RunSpeed: params.RunSpeed, 
           WalkPercentage: params.WalkPercentage,
-          ResourceID: 30, 
+          ResourceID: 30,
+          PushToTalk: params.PushToTalk
         }
       });
     }
@@ -66,6 +68,7 @@ const WorldsSettings = ({
         PasswordHash: '',  
         RunSpeed: params.RunSpeed, 
         WalkPercentage: params.WalkPercentage,
+        PushToTalk: params.PushToTalk
       }
     });
   };

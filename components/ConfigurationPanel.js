@@ -12,6 +12,7 @@ const ConfigurationPanel = ({ activeWorld, createParametersConfiguration, update
     RunSpeed: activeWorld?.WorldParametersConfiguration?.RunSpeed ?? 0,
     WalkPercentage: activeWorld?.WorldParametersConfiguration?.WalkPercentage ?? 0,
     AvatarTalkingIcon: activeWorld?.WorldParametersConfiguration?.AvatarTalkingIcon ?? false,
+    PushToTalk: activeWorld?.WorldParametersConfiguration?.PushToTalk ?? false,
   });
 
   const handlerInput = (event) => {
@@ -37,6 +38,7 @@ const ConfigurationPanel = ({ activeWorld, createParametersConfiguration, update
           ResourceID: 30, 
           RunSpeed: fields.RunSpeed, 
           WalkPercentage: fields.WalkPercentage,
+          PushToTalk: fields.PushToTalk
         }
       });
     } else {
@@ -49,6 +51,7 @@ const ConfigurationPanel = ({ activeWorld, createParametersConfiguration, update
           PasswordHash: activeWorld?.WorldParametersConfiguration?.PasswordHash,  
           RunSpeed: fields.RunSpeed, 
           WalkPercentage: fields.WalkPercentage,
+          PushToTalk: fields.PushToTalk
         }
       });
     }
@@ -90,6 +93,17 @@ const ConfigurationPanel = ({ activeWorld, createParametersConfiguration, update
         />
         <span>Avatar Talking Icon</span>
       </div>
+      <div className={styles.checkBox}>
+        <Input
+          id="PushToTalk"
+          onChange={handlerCheckBox}
+          checked={fields.PushToTalk}
+          type="checkbox"
+          value="text"
+          className="worldSetting"
+        />
+        <span>Push to talk</span>
+      </div>
       <div className={styles.btnContainer}>
         <Button color="apply" onClick={apply}>
           {string.apply}
@@ -104,6 +118,7 @@ ConfigurationPanel.propTypes = {
     WorldParametersConfiguration: PropTypes.shape({
       FlySpeed: PropTypes.number,
       Is_SpatialAudioMode: PropTypes.bool,
+      PushToTalk: PropTypes.bool,
       RunSpeed: PropTypes.number,
       WalkPercentage: PropTypes.number,
       AvatarTalkingIcon: PropTypes.bool,

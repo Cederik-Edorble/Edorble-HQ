@@ -556,8 +556,6 @@ const Dashboard = (props) => {
             addContentMapping={addContentMapping}
             removeContentMapping={removeContentMapping}
             updateContentMapping={updateContentMapping}
-            createParametersConfiguration={createParametersConfiguration}
-            updateParametersConfiguration={updateParametersConfiguration}
           />
         </div>
       )}
