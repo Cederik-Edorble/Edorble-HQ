@@ -22,12 +22,12 @@ const AddContentInWorldForm = ({
   
   useEffect(() => {
     const indexItem = findIndexItem(listRegions, 'id', Number(selectedRegion));
-    const getArrayHolders = listRegions[indexItem].InteractiveContentHolders;
+    const getArrayHolders = listRegions[indexItem]?.InteractiveContentHolders;
     setListHolders(getArrayHolders);
     if (activeContent?.InteractiveContentHolder?.id) {
       setHolder(activeContent?.InteractiveContentHolder?.id);
-    } else {
-      setHolder(getArrayHolders[0].id);
+    } else if (getArrayHolders) {
+      setHolder(getArrayHolders[0]?.id);
     }
   }, [selectedRegion]);
   
@@ -71,108 +71,114 @@ const AddContentInWorldForm = ({
   return (
     <div className="grid grid-cols-12">
       <div className="col-span-12">
+       
         <form onSubmit={activeContent?.Content?.id ? update : create}>
           <Row type="flex" align="center" className="mt-5">
-            {!activeContent?.Content?.id && (
-            <Col span={24} className="mt-5">
-              <div>
-                <span>Select region</span>
-                <select
-                  className="border-2
+           
+            {listRegions?.length > 0 ? (
+              <>
+                <Col span={24} className="mt-5">
+                  <div>
+                    <span>Select region</span>
+                    <select
+                      className="border-2
                     border-edorble-200
                     hover:border-edorble-200
                     focus:border-edorble-200
                     w-full rounded"
-                  style={{ width: '100%' }}
-                  required
-                  value={selectedRegion}
-                  placeholder="Content type"
-                  onChange={(ev) => {
-                    setSelectedRegion(ev.currentTarget.value);
-                  }}
-                >
-                  {listRegions && listRegions?.map((item, index) => (
-                    <option
-                      value={item.id}
-                      key={[item.name, index].join('_')}
+                      style={{ width: '100%' }}
+                      required
+                      value={selectedRegion}
+                      placeholder="Content type"
+                      onChange={(ev) => {
+                        setSelectedRegion(ev.currentTarget.value);
+                      }}
                     >
-                      {item.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </Col>
-            )}
-            <Col span={24} className="mt-5">
-              <div>
-                <span>Select content holder</span>
-                <select
-                  className="border-2
+                      {listRegions.length > 0 && listRegions?.map((item, index) => (
+                        <option
+                          value={item.id}
+                          key={[item.name, index].join('_')}
+                        >
+                          {item.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </Col>
+                <Col span={24} className="mt-5">
+                  <div>
+                    <span>Select content holder</span>
+                    <select
+                      className="border-2
                     border-edorble-200
                     hover:border-edorble-200
                     focus:border-edorble-200
                     w-full rounded"
-                  style={{ width: '100%' }}
-                  required
-                  value={holder}
-                  placeholder="Content type"
-                  onChange={(ev) => {
-                    setHolder(ev.currentTarget.value);
-                  }}
-                >
-                  {listHolders && listHolders?.map((item, index) => (
-                    <option
-                      value={item.id}
-                      key={[item.name, index].join('_')}
+                      style={{ width: '100%' }}
+                      required
+                      value={holder}
+                      placeholder="Content type"
+                      onChange={(ev) => {
+                        setHolder(ev.currentTarget.value);
+                      }}
                     >
-                      { `${item.name} (${item.InteractiveContentHolderType})`}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </Col>
-            <Col span={24} className="mt-5">
-              <div>
-                <span>Select content</span>
-                <select
-                  className="border-2
+                      {listHolders && listHolders?.map((item, index) => (
+                        <option
+                          value={item.id}
+                          key={[item.name, index].join('_')}
+                        >
+                          { `${item.name} (${item.InteractiveContentHolderType})`}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </Col>
+                <Col span={24} className="mt-5">
+                  <div>
+                    <span>Select content</span>
+                    <select
+                      className="border-2
                     border-edorble-200
                     hover:border-edorble-200
                     focus:border-edorble-200
                     w-full rounded"
-                  style={{ width: '100%' }}
-                  required
-                  value={selectedContent}
-                  placeholder="Content type"
-                  onChange={(ev) => {
-                    setSelectedContent(ev.currentTarget.value);
-                  }}
-                >
-                  {listContents && listContents?.map((item, index) => (
-                    <option
-                      value={item.id}
-                      key={[item.title, index].join('_')}
+                      style={{ width: '100%' }}
+                      required
+                      value={selectedContent}
+                      placeholder="Content type"
+                      onChange={(ev) => {
+                        setSelectedContent(ev.currentTarget.value);
+                      }}
                     >
-                      {item.title}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </Col>
-            <Col span={24} className="mt-5">
-              <Button
-                loading={false}
-                htmlType="submit"
-                className="border-0
+                      {listContents.length > 0 && listContents?.map((item, index) => (
+                        <option
+                          value={item.id}
+                          key={[item.title, index].join('_')}
+                        >
+                          {item.title}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </Col>
+                <Col span={24} className="mt-5">
+                  <Button
+                    loading={false}
+                    htmlType="submit"
+                    className="border-0
                     bg-edorble-yellow-500
                     hover:bg-edorble-yellow-600
                     hover:text-black
                     w-full rounded
                     font-bold"
-              >
-                Submit
-              </Button>
-            </Col>
+                  >
+                    Submit
+                  </Button>
+                </Col>
+              </>
+            ) : (
+              <span>Creat region in map</span>
+            )}
             { activeContent?.Content?.id
             && (
               <Col span={24} className="mt-5">
@@ -189,6 +195,7 @@ const AddContentInWorldForm = ({
             )}
           </Row>
         </form>
+        
       </div>
     </div>
   );

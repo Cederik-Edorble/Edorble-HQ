@@ -9,7 +9,7 @@ import request from '../request/contentHolder';
 import { filterArray, filterArrayScreen } from '../Utils/helper';
 
 const MapScreens = ({
-  setDrawerBody, setDrawerTitle, activeMap, fetchMaps, setActiveMap, maps, screenTypes, fetchContent
+  setDrawerBody, setDrawerTitle, activeMap, fetchMaps, setActiveMap, maps, screenTypes, fetchContent,
 }) => {
   const {
     CREATE_REGION, DELETE_REGION, UPDATE_REGION, CREATE_SCREEN, DELETE_SCREEN, UPDATE_SCREEN 
@@ -252,7 +252,7 @@ MapScreens.propTypes = {
   setActiveMap: PropTypes.func,
   fetchContent: PropTypes.func,
   maps: PropTypes.arrayOf(PropTypes.shape({})),
-  screenTypes: PropTypes.arrayOf(PropTypes.shape({}))
+  screenTypes: PropTypes.arrayOf(PropTypes.shape({})), 
 };
 
 MapScreens.defaultProps = {
@@ -262,6 +262,7 @@ MapScreens.defaultProps = {
   fetchContent: () => {},
   maps: [],
   screenTypes: [],
+
 };
 
 export default MapScreens;
