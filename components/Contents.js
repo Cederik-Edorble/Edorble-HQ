@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { useEffect } from 'react';
 import styles from '../styles/Contents.module.scss';
 import MenuContent from './MenuContent';
 import DrawerTitle from './DrawerTitle';
@@ -14,8 +15,15 @@ const Contents = ({
   contentType,
   resources, 
   deleteContent,
-  updateContentItem
+  updateContentItem,
+  fetchContent,
+  fetchContentType,
 }) => {
+  useEffect(() => {
+    fetchContent();
+    fetchContentType();
+  }, []);
+
   const createItem = () => {
     setDrawerTitle(
       <DrawerTitle text="New content" />
@@ -78,6 +86,8 @@ Contents.propTypes = {
   setDrawerTitle: PropTypes.func,
   deleteContent: PropTypes.func,
   updateContentItem: PropTypes.func,
+  fetchContent: PropTypes.func.isRequired,
+  fetchContentType: PropTypes.func.isRequired,
 };
 Contents.defaultProps = {
   content: [],
