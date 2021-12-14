@@ -20,7 +20,7 @@ const NewMapForm = ({
     ev.preventDefault();
     createMap({
       variables: {
-        ResourceID: fields.ResourceID,
+        ResourceID: 30,
         fileName: fields.fileName,
         macLink: fields.macLink,
         name: fields.name,
