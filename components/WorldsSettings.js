@@ -97,6 +97,9 @@ const WorldsSettings = ({
                 )}
               </h1>
               <h1 className="text-4xl text-edorble-300 font-bold">
+                {`World ID: ${activeWorld.id}` }
+              </h1>
+              <h1 className="text-4xl text-edorble-300 font-bold">
                 <i
                   className="fa fa-edit float-right text-2xl cursor-pointer mt-1"
                   role="presentation"
