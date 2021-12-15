@@ -5,7 +5,7 @@ import Input from './Input';
 import styles from '../styles/NewMapForm.module.scss';
 
 const NewMapForm = ({
-  createMap, activeMap, deleteMap, updateMap, setIdMapActive, resources
+  createMap, activeMap, deleteMap, updateMap, setIdMapActive
 }) => {
   const [fields, setFields] = useState({
     name: activeMap.name ?? '',
@@ -13,7 +13,7 @@ const NewMapForm = ({
     windowsLink: activeMap.windowsLink ?? '',
     macLink: activeMap.macLink ?? '',
     version: activeMap.version ?? '',
-    ResourceID: activeMap.ResourceID ?? resources[1]?.id,
+    ResourceID: activeMap.ResourceID ?? 10,
   });
 
   const create = async (ev) => {
@@ -131,9 +131,6 @@ NewMapForm.propTypes = {
     version: PropTypes.string,
     ResourceID: PropTypes.number
   }),
-  resources: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.number
-  })),
   createMap: PropTypes.func,
   deleteMap: PropTypes.func,
   updateMap: PropTypes.func,
@@ -146,7 +143,6 @@ NewMapForm.defaultProps = {
   createMap: () => {},
   updateMap: () => {},
   setIdMapActive: () => {},
-  resources: [],
 };
 
 export default NewMapForm;
