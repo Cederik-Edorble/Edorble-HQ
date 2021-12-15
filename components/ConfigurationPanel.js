@@ -102,7 +102,7 @@ const ConfigurationPanel = ({ activeWorld, createParametersConfiguration, update
           value="text"
           className="worldSetting"
         />
-        <span>Talking Mode</span>
+        <span>Push V to talk</span>
       </div>
       <div className={styles.btnContainer}>
         <Button color="apply" onClick={apply}>
