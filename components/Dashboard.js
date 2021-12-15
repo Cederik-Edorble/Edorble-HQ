@@ -29,11 +29,11 @@ const Dashboard = (props) => {
     content,
     setContent,
     contentType,
-    resources,
     screenTypes,
     regions,
     fetchContent,
-    fetchContentType
+    fetchContentType,
+    getScreenTypes
   } = props;
   const { GET_WORLDS, CREATE_WORLD, UPDATE_WORLD } = requestWorld;
   const {
@@ -122,10 +122,6 @@ const Dashboard = (props) => {
     onCompleted: (data) => getWorldHandler(data),
     fetchPolicy: 'network-only',
     onError: () => {
-      notification.error({
-        message: 'Error',
-        description: 'Error on load Worlds',
-      });
     },
   });
   
@@ -161,10 +157,6 @@ const Dashboard = (props) => {
     onCompleted: (data) => getMapHandler(data),
     fetchPolicy: 'network-only',
     onError: () => {
-      notification.error({
-        message: 'Error',
-        description: 'Error on load Maps',
-      });
     },
   });
 
@@ -409,20 +401,13 @@ const Dashboard = (props) => {
       setRetypePassword(params.PasswordHash);
     }
   }, [activeWorld]);
-
-  // useEffect(() => {
-  //   getScreenTypes();
-  // }, [activeMap]);
  
   useEffect(() => {
     const ownerId = +localStorage.getItem('userId');
     setUserId(ownerId);
     fetchWorlds();
     fetchMaps();
-    // fetchContent();
-    // fetchContentType();
-    // fetchResources();
-  }, [activeWorld, activeMap]);
+  }, [activeWorld, activeMap, activeTab]);
 
   return (
     <>
@@ -489,7 +474,6 @@ const Dashboard = (props) => {
           setActiveMap={setActiveMap}
           createMap={createMap}
           setActiveTab={setActiveTab}
-          resources={resources}
         />
       )}
       {activeMap && activeTab === 'map-settings' && (
@@ -514,6 +498,7 @@ const Dashboard = (props) => {
           screenTypes={screenTypes}
           fetchContent={fetchContent}
           fetchWorlds={fetchWorlds}
+          getScreenTypes={getScreenTypes}
         />
       )}
 
@@ -524,7 +509,6 @@ const Dashboard = (props) => {
         setShowModal={setShowModal}
         createContent={createContent}
         contentType={contentType}
-        resources={resources}
         deleteContent={deleteContent}
         updateContentItem={updateContentItem}
         fetchContent={fetchContent}
@@ -552,9 +536,25 @@ Dashboard.propTypes = {
   setActiveWorld: PropTypes.func.isRequired,
   setActiveTab: PropTypes.func.isRequired,
   setActiveMap: PropTypes.func.isRequired,
+  content: PropTypes.arrayOf(PropTypes.shape({})),
+  setContent: PropTypes.func,
+  contentType: PropTypes.arrayOf(PropTypes.shape({})),
+  screenTypes: PropTypes.arrayOf(PropTypes.shape({})),
+  regions: PropTypes.arrayOf(PropTypes.shape({})),
+  fetchContent: PropTypes.func,
+  fetchContentType: PropTypes.func,
+  getScreenTypes: PropTypes.func,
 };
 Dashboard.defaultProps = {
   activeWorld: null,
   activeMap: null,
+  content: [],
+  setContent: () => {},
+  contentType: [],
+  screenTypes: [],
+  regions: [],
+  fetchContent: () => {},
+  fetchContentType: () => {},
+  getScreenTypes: () => {},
 };
 export default Dashboard;

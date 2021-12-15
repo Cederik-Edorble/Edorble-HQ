@@ -12,7 +12,6 @@ const Contents = ({
   setShowModal,
   setDrawerTitle, 
   contentType,
-  resources, 
   deleteContent,
   updateContentItem,
   
@@ -25,7 +24,6 @@ const Contents = ({
       <NewContentForm 
         createContent={createContent}
         contentType={contentType} 
-        resources={resources}
       />
     );
   };
@@ -51,7 +49,6 @@ const Contents = ({
       <NewContentForm 
         createContent={createContent}
         contentType={contentType} 
-        resources={resources}
         content={item[0]}
         updateContentItem={updateContentItem}
       />
@@ -73,7 +70,6 @@ const Contents = ({
 Contents.propTypes = {
   content: PropTypes.arrayOf(PropTypes.shape({})),
   contentType: PropTypes.arrayOf(PropTypes.shape({})),
-  resources: PropTypes.arrayOf(PropTypes.shape({})),
   createContent: PropTypes.func,
   setShowModal: PropTypes.func,
   setDrawerTitle: PropTypes.func,
@@ -83,7 +79,6 @@ Contents.propTypes = {
 Contents.defaultProps = {
   content: [],
   contentType: [],
-  resources: [],
   createContent: () => {},
   setShowModal: () => {},
   setDrawerTitle: () => {},

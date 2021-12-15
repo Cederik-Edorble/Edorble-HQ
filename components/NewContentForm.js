@@ -5,7 +5,7 @@ import {
 import PropTypes from 'prop-types';
 
 const NewContentForm = ({
-  content, createContent, contentType, resources, updateContentItem,
+  content, createContent, contentType, updateContentItem,
 }) => {
   const [url, setUrl] = useState(content?.url ?? '');
   const [title, setTitle] = useState(content?.title ?? '');
@@ -45,7 +45,7 @@ const NewContentForm = ({
           title,
           url,
           ContentType: type,
-          ResourceID: resources[37].id,
+          ResourceID: 10,
         },
       });
     }
@@ -166,15 +166,11 @@ NewContentForm.propTypes = {
   }),
   createContent: PropTypes.func,
   contentType: PropTypes.arrayOf(PropTypes.shape({})),
-  resources: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.number
-  })),
   updateContentItem: PropTypes.func,
 };
 NewContentForm.defaultProps = {
   content: null,
   contentType: [],
-  resources: [],
   activeWorld: {},
   createContent: () => {},
   updateContentItem: () => {},
