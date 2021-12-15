@@ -2,14 +2,12 @@ import React, { useState, useEffect } from 'react';
 import {
   Drawer, notification
 } from 'antd';
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import PropTypes from 'prop-types';
 import WorldContentConfiguration from './WorldContentConfiguration';
 import requestWorld from '../request/worlds';
 import requestMap from '../request/map';
 import requestContentWorld from '../request/contentsWorld';
-import requestResources from '../request/resourses';
-import requestHolder from '../request/contentHolder';
 import requestMapping from '../request/contentMappings';
 import requestWorldConfiguration from '../request/worldParametersConfiguration';
 import MapList from './MapList';
@@ -28,18 +26,25 @@ const Dashboard = (props) => {
     setActiveTab,
     setActiveMap,
     activeMap,
+    content,
+    setContent,
+    contentType,
+    resources,
+    screenTypes,
+    regions,
+    fetchContent,
+    fetchContentType
   } = props;
   const { GET_WORLDS, CREATE_WORLD, UPDATE_WORLD } = requestWorld;
   const {
     GET_MAPS, CREATE_MAP, DELETE_MAP, UPDATE_MAP 
   } = requestMap;
   const {
-    GET_CONTENTS, CREATE_CONTENT, GET_CONTENT_TYPE, DELETE_CONTENT, UPDATE_CONTENT
+    CREATE_CONTENT, DELETE_CONTENT, UPDATE_CONTENT
   } = requestContentWorld;
-  const { GET_SCREEN_TYPES } = requestHolder;
-  const { GET_RESOURCES } = requestResources;
+
   const {
-    GET_REGIONS_HOLDERS, CREATE_CONTENT_MAPPINGS, REMOVE_CONTENT_MAPPINGS, UPDATE_CONTENT_MAPPINGS 
+    CREATE_CONTENT_MAPPINGS, REMOVE_CONTENT_MAPPINGS, UPDATE_CONTENT_MAPPINGS 
   } = requestMapping;
   const { INSERT_PARAMS, UPDATE_WORLD_PARAMS, UPDATE_PARAMS } = requestWorldConfiguration;
   const [showModal, setShowModal] = useState(null);
@@ -52,12 +57,6 @@ const Dashboard = (props) => {
   const [nameWorld, setNameWorld] = useState(activeWorld?.name ? activeWorld?.name : '');
   const [editName, setEditName] = useState(false);
 
-  const [content, setContent] = useState([]);
-  const [contentType, setContentType] = useState(false);
-  const [resources, setResources] = useState(false);
-  const [screenTypes, setScreenTypes] = useState([]);
-  const [regions, setRegions] = useState([]);
-
   const [idMapActive, setIdMapActive] = useState(null);
   const [idWorldActive, setIdWorldActive] = useState(null);
   
@@ -65,66 +64,9 @@ const Dashboard = (props) => {
     setIdMapActive(activeMap?.id);
     setIdWorldActive(activeWorld?.id);
   }, [activeMap, activeWorld]);
-  
-  const handlerHolder = ({ InteractiveContentHolderTypes }) => {
-    setScreenTypes(InteractiveContentHolderTypes);
-  };
-
-  const handlerRegions = ({ Regions }) => {
-    setRegions(Regions);
-  };
-  
-  const [getScreenTypes] = useLazyQuery(GET_SCREEN_TYPES, {
-    onCompleted: (data) => {
-      handlerHolder(data); 
-    },
-    onError: () => {
-      notification.error({
-        message: 'Error',
-        description: 'Error on getting screens types',
-      });
-    },
-  });
-
-  const [getRegions] = useLazyQuery(GET_REGIONS_HOLDERS, {
-    onCompleted: (data) => handlerRegions(data),
-    fetchPolicy: 'network-only',
-    onError: () => {
-      notification.error({
-        message: 'Error',
-        description: 'Error on getting regions',
-      });
-    },
-  });
-
-  const regionQuery = useQuery(GET_REGIONS_HOLDERS, {
-    variables: {
-      _eq: activeWorld?.mapID
-    },
-    fetchPolicy: 'network-only',
-  });
-
-  useEffect(() => {
-    if (regionQuery?.data) {
-      handlerRegions(regionQuery.data);
-    }
-  }, [regionQuery]);
-
-  useEffect(() => {
-    regionQuery.refetch({
-      variables: {
-        _eq: activeWorld?.mapID
-      },
-    });
-  }, [activeWorld]);
 
   useEffect(() => {
     if (activeWorld) {
-      getRegions({
-        variables: {
-          _eq: activeWorld.mapID
-        }
-      });
       setNameWorld(activeWorld?.name);
     }
   }, [activeWorld, activeMap, activeTab]);
@@ -175,18 +117,6 @@ const Dashboard = (props) => {
 
   const getWorldHandler = ({ Worlds }) => setWorlds(Worlds);
   const getMapHandler = ({ Maps }) => setMaps(Maps);
-
-  const getContentHandler = ({ Contents: contents }) => {
-    setContent(contents); 
-  };
-  
-  const getContentTypeHandler = ({ ContentTypes }) => {
-    setContentType(ContentTypes); 
-  };
-
-  const getResourcesHandler = ({ Resources }) => {
-    setResources(Resources); 
-  };
 
   const [fetchWorlds] = useLazyQuery(GET_WORLDS, {
     onCompleted: (data) => getWorldHandler(data),
@@ -273,39 +203,6 @@ const Dashboard = (props) => {
       notification.error({
         message: 'Error',
         description: 'Error on delete map',
-      });
-    },
-  });
-
-  const [fetchContent] = useLazyQuery(GET_CONTENTS, {
-    onCompleted: (data) => getContentHandler(data),
-    fetchPolicy: 'network-only',
-    onError: () => {
-      notification.error({
-        message: 'Error',
-        description: 'Error on load contents',
-      });
-    },
-  });
-
-  const [fetchContentType] = useLazyQuery(GET_CONTENT_TYPE, {
-    onCompleted: (data) => getContentTypeHandler(data),
-    fetchPolicy: 'network-only',
-    onError: () => {
-      notification.error({
-        message: 'Error',
-        description: 'Error on load content type',
-      });
-    },
-  });
-
-  const [fetchResources] = useLazyQuery(GET_RESOURCES, {
-    onCompleted: (data) => getResourcesHandler(data),
-    fetchPolicy: 'network-only',
-    onError: () => {
-      notification.error({
-        message: 'Error',
-        description: 'Error on load resources',
       });
     },
   });
@@ -513,18 +410,18 @@ const Dashboard = (props) => {
     }
   }, [activeWorld]);
 
-  useEffect(() => {
-    getScreenTypes();
-  }, [activeMap]);
+  // useEffect(() => {
+  //   getScreenTypes();
+  // }, [activeMap]);
  
   useEffect(() => {
     const ownerId = +localStorage.getItem('userId');
     setUserId(ownerId);
     fetchWorlds();
     fetchMaps();
-    fetchContent();
-    fetchContentType();
-    fetchResources();
+    // fetchContent();
+    // fetchContentType();
+    // fetchResources();
   }, [activeWorld, activeMap]);
 
   return (

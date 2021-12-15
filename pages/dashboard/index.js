@@ -1,18 +1,131 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import { useLazyQuery, useQuery } from '@apollo/client';
+import { notification } from 'antd';
 import Navbar from '../../components/Navbar';
 import DownloadEdorble from '../../components/DownloadEdorble';
 import DashboardNav from '../../components/DashboardNav';
 import Dashboard from '../../components/Dashboard';
 import constant from '../../constants/routes';
 import items from '../../constants/items';
+import requestContentWorld from '../../request/contentsWorld';
+import requestResources from '../../request/resourses';
+import requestHolder from '../../request/contentHolder';
+import requestMapping from '../../request/contentMappings';
 import { getStringStorage } from '../../Utils/storageWorks';
 
 const Index = () => {
   const router = useRouter();
+  const { GET_REGIONS_HOLDERS } = requestMapping;
+  const { GET_SCREEN_TYPES } = requestHolder;
+  const { GET_RESOURCES } = requestResources;
+  const { GET_CONTENTS, GET_CONTENT_TYPE } = requestContentWorld;
   const [activeWorld, setActiveWorld] = useState(null);
   const [activeTab, setActiveTab] = useState(items.worlds);
   const [activeMap, setActiveMap] = useState(null);
+
+  const [content, setContent] = useState([]);
+  const [contentType, setContentType] = useState(false);
+  const [resources, setResources] = useState(false);
+  const [screenTypes, setScreenTypes] = useState([]);
+  const [regions, setRegions] = useState([]);
+
+  const handlerHolder = ({ InteractiveContentHolderTypes }) => {
+    setScreenTypes(InteractiveContentHolderTypes);
+  };
+
+  const handlerRegions = ({ Regions }) => {
+    setRegions(Regions);
+  };
+
+  const getResourcesHandler = ({ Resources }) => {
+    setResources(Resources); 
+  };
+
+  const getContentTypeHandler = ({ ContentTypes }) => {
+    setContentType(ContentTypes); 
+  };
+
+  const [fetchResources] = useLazyQuery(GET_RESOURCES, {
+    onCompleted: (data) => getResourcesHandler(data),
+    fetchPolicy: 'network-only',
+    onError: () => {
+      notification.error({
+        message: 'Error',
+        description: 'Error on load resources',
+      });
+    },
+  });
+
+  const getContentHandler = ({ Contents: contents }) => {
+    setContent(contents); 
+  };
+
+  const [fetchContent] = useLazyQuery(GET_CONTENTS, {
+    onCompleted: (data) => getContentHandler(data),
+    fetchPolicy: 'network-only',
+    onError: () => {
+      notification.error({
+        message: 'Error',
+        description: 'Error on load contents',
+      });
+    },
+  });
+
+  const [fetchContentType] = useLazyQuery(GET_CONTENT_TYPE, {
+    onCompleted: (data) => getContentTypeHandler(data),
+    fetchPolicy: 'network-only',
+    onError: () => {
+      notification.error({
+        message: 'Error',
+        description: 'Error on load content type',
+      });
+    },
+  });
+
+  const [getScreenTypes] = useLazyQuery(GET_SCREEN_TYPES, {
+    onCompleted: (data) => {
+      handlerHolder(data); 
+    },
+    onError: () => {
+      notification.error({
+        message: 'Error',
+        description: 'Error on getting screens types',
+      });
+    },
+  });
+
+  const [getRegions] = useLazyQuery(GET_REGIONS_HOLDERS, {
+    onCompleted: (data) => handlerRegions(data),
+    fetchPolicy: 'network-only',
+    onError: () => {
+      notification.error({
+        message: 'Error',
+        description: 'Error on getting regions',
+      });
+    },
+  });
+
+  const regionQuery = useQuery(GET_REGIONS_HOLDERS, {
+    variables: {
+      _eq: activeWorld?.mapID
+    },
+    fetchPolicy: 'network-only',
+  });
+
+  useEffect(() => {
+    if (regionQuery?.data) {
+      handlerRegions(regionQuery.data);
+    }
+  }, [regionQuery]);
+
+  useEffect(() => {
+    regionQuery.refetch({
+      variables: {
+        _eq: activeWorld?.mapID
+      },
+    });
+  }, [activeWorld]);
 
   const redirectHandler = (path) => router.push(`${path}`).then(() => window.scrollTo(0, 0));
 
@@ -34,6 +147,26 @@ const Index = () => {
       }
     }
   }, []);
+
+  useEffect(() => {
+    getScreenTypes();
+  }, [activeMap]);
+
+  useEffect(() => {
+    if (activeWorld) {
+      getRegions({
+        variables: {
+          _eq: activeWorld.mapID
+        }
+      });
+    }
+  }, [activeWorld, activeMap, activeTab]);
+ 
+  useEffect(() => {
+    fetchContent();
+    fetchContentType();
+    fetchResources();
+  }, [activeWorld, activeMap]);
   
   return (
     <>
@@ -58,6 +191,18 @@ const Index = () => {
                 activeWorld={activeWorld}
                 setActiveMap={setActiveMap}
                 activeMap={activeMap}
+                content={content}
+                setContent={setContent}
+                contentType={contentType}
+                setContentType={setContentType}
+                resources={resources}
+                setResources={setResources}
+                screenTypes={screenTypes}
+                setScreenTypes={setScreenTypes}
+                regions={regions}
+                setRegions={setRegions}
+                fetchContent={fetchContent}
+                fetchContentType={fetchContentType}
               />
             </div>
           </div>
