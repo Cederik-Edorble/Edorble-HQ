@@ -7,6 +7,10 @@
 .containerTitle {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: start;
   width: 100%;
+
+  h1 {
+    margin-right: 40px;
+  }
 }
