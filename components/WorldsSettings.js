@@ -96,9 +96,7 @@ const WorldsSettings = ({
                   />
                 )}
               </h1>
-              <h1 className="text-4xl text-edorble-300 font-bold">
-                {`World ID: ${activeWorld.id}` }
-              </h1>
+              
               <h1 className="text-4xl text-edorble-300 font-bold">
                 <i
                   className="fa fa-edit float-right text-2xl cursor-pointer mt-1"
@@ -106,10 +104,16 @@ const WorldsSettings = ({
                   onClick={editTitleHandler}
                 />
               </h1>
+              
+            </div>
+            <div className="grid col-span-4 mb-5 mt-5 ">
+              <h1 className="text-4xl text-edorble-300 font-bold">
+                {`World ID: ${activeWorld.id}` }
+              </h1>
             </div>
 
             <div className="grid col-span-4 mb-5 mt-5">
-              <h1 className="text-4xl text-edorble-300 font-bold w-full">
+              <h1 className="text-4xl text-edorble-300 font-bold w-full mb-5 mt-10">
                 Map
               </h1>
               <div className="grid  col-span-8">
