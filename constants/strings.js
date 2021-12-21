@@ -5,7 +5,7 @@ const strings = {
   removeContent: 'remove',
   saveChanges: 'save changes',
   labelBtnEdit: 'edit',
-  apply: 'apply'
+  apply: 'apply configuration'
 
 };
 

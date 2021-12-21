@@ -93,6 +93,7 @@ const WorldsSettings = ({
                     onChange={nameHandler}
                     value={nameWorld}
                     styleType="worldSetting"
+                    onBlur={editTitleHandler}
                   />
                 )}
               </h1>
